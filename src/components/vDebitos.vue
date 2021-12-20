@@ -111,7 +111,7 @@
                                 </div>
                                 <div class="form-group row texto">
                                     <label  class="col-sm-5 col-form-label">Saldo:</label>
-                                    <label  class="col-sm-5 col-form-label">$ {{debito.saldo}}</label>
+                                    <label  class="col-sm-5 col-form-label" style="border-top: solid purple; ">$ {{debito.saldo}}</label>
                                 </div>
                             </v-col>
                         </v-row>

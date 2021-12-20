@@ -58,10 +58,10 @@
                             </v-toolbar>
                         </template>
                         <template v-slot:[`item.abono`]="{ item }">
-                            {{parseInt(item.efectivo) + parseInt(item.nequi) + parseInt(item.tarjeta) + parseInt(item.credigo)}}
+                            {{parseInt(item.efectivo) + parseInt(item.nequi) + parseInt(item.tarjeta) + parseInt(item.credito)}}
                         </template>
                         <template v-slot:[`item.saldo`]="{ item }">
-                            {{parseInt(item.saldoAnterior) - parseInt(item.efectivo) - parseInt(item.nequi) - parseInt(item.tarjeta) - parseInt(item.credigo)}}
+                            {{parseInt(item.saldoAnterior) - parseInt(item.efectivo) - parseInt(item.nequi) - parseInt(item.tarjeta) - parseInt(item.credito)}}
                         </template>
                         <template v-slot:[`item.actions`]="{ item }">
                             <v-icon  class="mr-2"  @click="cambioPagina(2,item)"  >mdi-file-find</v-icon>
@@ -116,8 +116,12 @@
                                     <label  class="col-sm-5 col-form-label">$ {{abono.tarjeta}}</label>
                                 </div>
                                 <div class="form-group row texto">
+                                    <label  class="col-sm-5 col-form-label">Credito:</label>
+                                    <label  class="col-sm-5 col-form-label">$ {{abono.credito}}</label>
+                                </div>
+                                <div class="form-group row texto">
                                     <label  class="col-sm-5 col-form-label">Saldo:</label>
-                                    <label  class="col-sm-5 col-form-label">$ {{abono.saldo}}</label>
+                                    <label  class="col-sm-5 col-form-label" style="border-top: solid purple; ">$ {{abono.saldoAnterior-abono.efectivo-abono.nequi-abono.tarjeta-abono.credito}}</label>
                                 </div>
                             </v-col>
                         </v-row>
@@ -158,15 +162,16 @@
                             </v-col>
                         </v-row>
                     </v-card>
-                    <v-data-table style="margin-top:50px"  class="elevation-15 "  :headers="articulosTitle" :items="abono.articulos"  :search="search">
+
+                    <v-data-table style="margin-top:50px"  class="elevation-15 "  :headers="articulosTitle" :items="articulos"  :search="search">
                         <template v-slot:top>
                             <v-toolbar  flat>
-                                <v-toolbar-title>Prendas de salida</v-toolbar-title>
                                 <v-spacer></v-spacer>
                                 <v-text-field   v-model="search"  append-icon="mdi-magnify"  label="Buscar Prenda"  single-line hide-details></v-text-field>
                             </v-toolbar>
                         </template >
                     </v-data-table>
+
                 </v-container>
             </template>
         </v-container>
@@ -184,6 +189,7 @@
             vista:1,
             abonos:[],
             abono:{},
+            articulos:[],
             cliente:{},
             calendarioInicio: false,
             calendarioFinal: false,
@@ -204,7 +210,7 @@
                 { text: 'Categoria', value: 'categoria'  ,class:'purple darken-3 white--text'},
                 { text: 'Marca', value: 'marca'  ,class:'purple darken-3 white--text'},
                 { text: 'Referencia', value: 'referencia'  ,class:'purple darken-3 white--text'},
-                { text: 'Cantidades', value: 'cantidad'  ,class:'purple darken-3 white--text'},
+                { text: 'Cantidades', value: 'cantidad'  ,class:'purple darken-3 white--text'}
             ],
         }),//data
         created(){
@@ -248,6 +254,7 @@
                 }else{
                     this.vista=1;
                     this.abono={};
+                    this.cliente={};
                 }
             },
 
@@ -318,7 +325,6 @@
             },//reset
 
             detallesAbonos(item){
-                console.log(item);
                 this.abono=item;
 
                 if(this.abono.persona.trim()!=''){
@@ -345,17 +351,12 @@
                         })
                 }
 
-            },
-
-
-            detallesCompra(item){
-                console.log(item);
                 let header = {headers:{"token" : this.$store.state.token}};
-                axios.get(`movimiento/compraById/${item._id}`,header)
+                axios.get(`venta/ventaId/${item._id}`,header)
                     .then(response=>{
                         console.log(response);
-                        let comprabd = response.data.compra;
-                        this.limpiarDatosCompra(comprabd,item);
+                        let abonobd = response.data.venta;
+                        this.limpiarDatosAbono(abonobd);
                     })
                     .catch((error)=>{
                         console.log(error);
@@ -370,27 +371,29 @@
                             this.msjError(this.msgError);
                         }
                     })
+
+
             },
 
-            limpiarDatosCompra(datos,item){
-                this.compra=item;
+            limpiarDatosAbono(datos){
                 let articulosLimpios = []
                 let articulosSucios = datos.articulos;
 
-                articulosSucios.map(function(x){
+                if(articulosSucios.length>0){
+                    articulosSucios.map(function(x){
 
-                    let codigo = x.sku.split("-")
-
-                    articulosLimpios.push({
-                        referencia:x.referencia,
-                        categoria:codigo[0],
-                        marca : codigo[1],
-                        cantidad : x.cantidad,
-                        costo : x.costo,
-                        precio : x.precio
+                        let codigo = x.sku.split("-")
+                        console.log(codigo);
+                        articulosLimpios.push({
+                            referencia:codigo[2],
+                            categoria:codigo[0],
+                            marca : codigo[1],
+                            cantidad : x.cantidad,
+                        })
                     })
-                })
-                this.compra.articulos = articulosLimpios;
+                }
+                
+                this.articulos = articulosLimpios;
             },
 
 
