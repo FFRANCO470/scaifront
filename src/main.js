@@ -34,6 +34,6 @@ new Vue({
   router,
   store,
   Swal,
-  XLSX
+  XLSX,
   //excel
 }).$mount('#app')

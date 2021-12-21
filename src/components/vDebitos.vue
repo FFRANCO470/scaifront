@@ -343,7 +343,8 @@
                             saldoAnterior:x.saldoAnterior,  
                             efectivo:x.efectivo,
                             nequi:x.nequi,
-                            tarjeta:x.tarjeta
+                            tarjeta:x.tarjeta,
+                            credito:x.credito,
                         }
                     );
                 });

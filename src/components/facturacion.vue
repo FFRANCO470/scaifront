@@ -324,9 +324,14 @@
 </template>
 
 <script>
-    import {eventBus} from '../main'
+    //import {eventBus} from '../main'
     import axios from 'axios'
     import Swal from "sweetalert2"
+    import jsPDF from 'jspdf'
+    
+    //import * as fs from 'fs'
+
+
     export default {
         data:()=>({
             numFactura:0,
@@ -341,7 +346,6 @@
             tarjeta:0,
             credito:0,
             descuento:0,
-
             cliente:{
                 _id:'',
                 tipoDocumento:'',
@@ -351,7 +355,6 @@
                 telefono:'',
                 email:''
             },
-
             //datos a enviar
             
             search:'',
@@ -393,8 +396,6 @@
                 { text: 'Cantidad', value: 'cantidad',class:'grey darken-4 white--text' },
                 {text:'Eliminar',value:'actions',class:'grey darken-4 white--text',sortable: false}
             ],
-
-
         }),//data
         
         created(){
@@ -403,7 +404,6 @@
             this.traerArticulosActivos();
         },
         methods:{
-
             //validar que la ruta tenga token si no redireccionar a login
             checkToken(){
                 if(!this.$store.state.token && this.$router.currentRoute.name!=="/"){
@@ -433,13 +433,10 @@
                     timer:1000
                 })
             },//msjExitoso
-
             //buscar y traer el cliente
             traerCliente(){
                 if(this.cliente._id.trim()===''){return this.msjErrores('Numero de documento obligatorio')}
-
                 let header = {headers:{"token" : this.$store.state.token}};
-
                 axios.get(`cliente/buscando?numDocumento=${this.cliente._id}`,header,)
                     .then(response=>{
                          console.log(response);
@@ -461,7 +458,6 @@
                         }
                     })
             },//traerCliente
-
             //preguntar si desea agregar cliente 
             agregarCliente:function(){
                 Swal.fire({
@@ -481,7 +477,6 @@
                     }
                 })
             },//agregarCliente
-
             //traer numero de factura
             traerNumFactura(){
                 let header = {headers:{"token" : this.$store.state.token}};
@@ -501,7 +496,6 @@
                         }
                     })
             },//traerNumFactura
-
             //traer articulos activos
             traerArticulosActivos(){
                 let header = {headers:{"token" : this.$store.state.token}};
@@ -524,7 +518,6 @@
                         }
                     })
             },//trearArticulosActivos
-
             //alistar los articulos para mostrar en la venta
             meterArticulos(articulosTraidos){
                 let pepe=[];
@@ -544,29 +537,23 @@
                 this.articulosMostradosVenta=pepe;
                 console.log(this.articulosMostradosVenta);
             },//meterArticulos
-
             //meter el articulo en la venta
             facturar(item){
                 this.editedIndex=this.articulosMostradosVenta.indexOf(item);
                 this.facturaArticulos.push(item);
                 this.articulosMostradosVenta.splice(this.editedIndex,1);
             },//facturar
-
             //quita el articulo de la venta
             desfacturar(item){
                 this.editedIndex=this.facturaArticulos.indexOf(item)
                 this.articulosMostradosVenta.push(item)
                 this.facturaArticulos.splice(this.editedIndex,1)
             },//desfacturar
-
-
-
             //crear la factura
             crearFactura(){
                 
                 //validar tipo factura
                 if(this.tipoFactura===""){return this.msjErrores('Tipo de factura obligatorio')}
-
                 //validar subtipo factura
                 if(this.tipoFactura=='venta'){
                     if(this.subTipoFactura==''){
@@ -577,7 +564,6 @@
                     }
                     let saldoVenta = -1 * (-this.efectivo - this.nequi - this.tarjeta - this.credito)
                     let saldoTotal = this.totalVendido - this.descuento
-
                     if(this.subTipoFactura=='venta'){
                         if(saldoVenta != saldoTotal ){
                             return this.msjErrores('Saldos desiguales')
@@ -585,7 +571,6 @@
                     }
                     
                 }
-
                 //validar factura debito
                 if(this.tipoFactura=='debito'){
                     if(this.saldoAnterior==0 ||  this.saldoAnterior==''){
@@ -596,7 +581,6 @@
                         return this.msjErrores('Completar almenos efectivo o nequi o tarjeta')
                     }
                 }
-
                 //validar factura abono sobre abono
                 if(this.tipoFactura=='abonoAbono'){
                     if(this.saldoAnterior==0 ||  this.saldoAnterior==''){
@@ -611,19 +595,16 @@
                         return this.msjErrores('Artuculos obligatorios')
                     }
                 }
-
                 //validar comentario
                 if(this.comentario.length>250){
-                    return this.msjErrores('Comentario mayor a 250 carácteres')
+                    return this.msjErrores('Comentario mayor a 250 caracteres')
                 }
-
                 
                 //validar id cliente
                 if(!this.guardarDatos){
                     if(this.cliente._id===''){return this.msjErrores('Numero de documento obligatorio')}
                     if(this.cliente.nombre===''){return this.msjErrores('Nombre obligatorio')}
                 }
-
                 let me = this                
                 let header = {headers:{"token":this.$store.state.token}};
                 axios.post('venta',
@@ -633,12 +614,9 @@
                         tipoFactura:this.tipoFactura,
                         subTipoFactura:this.subTipoFactura,
                         comentario:this.comentario,
-
                         guardarDatos:this.guardarDatos,
                         existeCliente:this.existeCliente,
-
                         persona:this.cliente,
-
                         saldoAnterior:this.saldoAnterior,
                         efectivo:this.efectivo,
                         nequi:this.nequi,
@@ -649,19 +627,18 @@
                         totalPrecio:this.totalVendido,
                         totalCosto:this.totalCosto,
                         articulos : this.facturaArticulos
-
                     },header)
                         .then((response)=>{
                             console.log(response);
                             this.msjExitoso('estoy facturando')
                             this.traerNumFactura();
                             this.traerArticulosActivos();
-                            me.limpiarTodo();
+                            //me.limpiarTodo();
 
-
-                            eventBus.$emit("pasar","la escalandia")
+                            me.crearPDF();
+                            //eventBus.$emit("pasar","la escalandia")
                             
-                            this.$router.push('/aaaa');
+                            //this.$router.push('/aaaa');
                         })
                         .catch((error)=>{
                             console.log(error.response);
@@ -675,10 +652,8 @@
                                 this.msjErrores(this.msgError);
                             }
                         })
-
                 
             },//crearFactura
-
             limpiarTodo(){
                 this.cliente={};
                 this.existeCliente = false;
@@ -693,15 +668,101 @@
                 this.descuento=0;
                 this.facturaArticulos=[];
                 this.comentario="";
-
                 console.log("limiop");
-            }//
+            },//limpiarTodo
+
+            crearPDF(){ 
+                //http://raw.githack.com/MrRio/jsPDF/master/docs/module-viewerpreferences.html
+               
+                //http://raw.githack.com/MrRio/jsPDF/master/
+               var sise = 10
+
+                var doc = new jsPDF();
+                doc.beginFormObject(0, 0, 250, 600)
+
+                doc.roundedRect(1, 1, 86, 169, 0, 0)
+                doc.setFont(undefined, 'bold');
+
+                doc.setFontSize(16);
+                doc.text("THE SCALA",30,9,{charSpace:0.4});
+
+                doc.setFontSize(sise);
+                doc.text("GINA PAOLA CEPEDA VERGARA", 14, 14,{charSpace:0.4});
+
+                doc.setFontSize(sise);
+                doc.text("NIT: 52515303-7            Reg Simplificado", 2, 20,{charSpace:0.3});
+
+                doc.text("C.C EL PUENTE L.154   San Gil(Santander)", 2, 26,{charSpace:0.3});
+
+                doc.text("Cel.:311 893 8204         Tel.:724 1748", 2, 32,{charSpace:0.3});
+
+                doc.text("Nombre: ", 2,38,{charSpace:0.3});
+
+                doc.text("Telefono: ", 2,44,{charSpace:0.3});
+
+                doc.text("Dirección: ", 2,50,{charSpace:0.3});
+
+                doc.text("Ciudad: ", 2,56,{charSpace:0.3});
+
+                doc.text("Cedula: ", 2,62,{charSpace:0.3});
+
+                doc.line(1,68,87,68)
+
+                doc.text("Factura Venta  3338    22-nov-21   6:6 pm", 3,74,{charSpace:0.3});
+
+                var datos = [
+                    {refer: "c2121",cant: "1",desc: "camisa blanca",unidad: "200000",total:"1000000"},
+                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
+                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
+                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
+                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
+                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
+                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
+                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},   
+                    {refer: " ",cant: " ",desc: " ",unidad: "Total",total:"17000000"}
+                ];
+
+                var cabeza = [
+                    {align:"center",width:21,id:"refer",name:"refer",prompt:"Refer"},
+                    {align:"center",width:17,id:"cant",name:"cant",prompt:"Cant"},
+                    {align:"center",width:27,id:"desc",name:"desc",prompt:"Desc"},
+                    {align:"center",width:24,id:"unidad",name:"unidad",prompt:"Vr Unit"},
+                    {align:"center",width:25.3,id:"total",name:"total",prompt:"Vr total"}
+                ];
+
+                doc.table(1, 80, datos, cabeza,{fontSize:"9",autoSize: false,headerBackgroundColor:"#FFFFFF",padding:0.5});
+
+                doc.setFont(undefined, 'bold');
+                doc.setFontSize(sise);
+                doc.text("Vendedor     Ricardo", 25,135,{charSpace:0.3});
+
+                doc.text("Metodo de pago", 30,140,{charSpace:0.3});
+
+                doc.rect(1, 143, 20, 10);
+                doc.rect(21, 143, 23, 10);
+                doc.rect(44, 143, 21.5, 10);
+                doc.rect(65.5, 143, 21.5, 10);
+
+                doc.text("Efectivo", 2,147,{charSpace:0.1});
+                doc.text("Sistecredito", 22,147,{charSpace:0.1});
+                doc.text("Tarjeta", 46,147,{charSpace:0.1});
+                doc.text("Nequi", 68,147,{charSpace:0.1});
+
+                doc.text("100000", 2,152);
+                doc.text("200000", 24,152);
+                doc.text("5000000", 46,152);
+                doc.text("350000", 68,152);
+
+                doc.text("Observaciones", 28,158,{charSpace:0.3});
+                doc.text("Velen campanas de velen que los angeles canta que noche que esta bien", 2,162,{maxWidth:"70",charSpace:0.3});
+
+                doc.autoPrint({variant: 'conform'});
+                doc.save('autoprint.pdf');
+
+
+            }//crearPDF
             
-
-
-
         },//methods
-
         computed:{
             totalVendido(){
                 return this.facturaArticulos.reduce((suma,articulo)=>{

@@ -2,8 +2,7 @@
     <div>
         <v-container fluid>
 
-        
-            
+                 
             <div class="ticket">
 
                 <img
@@ -45,9 +44,6 @@
                     <v-icon >mdi-clipboard-account-outline</v-icon> volver
                 </v-btn>
             </div>
-                
-
-            
         </v-container>
     </div>
 </template>
@@ -60,6 +56,8 @@
             informacion:""
         }),//data
         created(){
+
+            this.traerDataStore();
             
             eventBus.$on("pasar",(data)=>{
                 return this.informacion = data
@@ -68,6 +66,10 @@
            
         },
         methods:{
+
+            traerDataStore(){
+
+            },
 
             crearFactura(){
                 console.log("la info",this.informacion);
@@ -89,52 +91,52 @@
         font-family: 'Times New Roman';
     }
     td,
-th,
-tr,
-table {
-    border-top: 1px solid black;
-    border-collapse: collapse;
-}
-
-td.producto,
-th.producto {
-    width: 75px;
-    max-width: 75px;
-}
-
-td.cantidad,
-th.cantidad {
-    width: 40px;
-    max-width: 40px;
-    word-break: break-all;
-}
-
-td.precio,
-th.precio {
-    width: 40px;
-    max-width: 40px;
-    word-break: break-all;
-}
-
-.centrado {
-    text-align: center;
-    align-content: center;
-}
-
-.ticket {
-    width: 155px;
-    max-width: 155px;
-}
-
-img {
-    max-width: inherit;
-    width: inherit;
-}
-
-@media print {
-    .oculto-impresion,
-    .oculto-impresion * {
-        display: none !important;
+    th,
+    tr,
+    table {
+        border-top: 1px solid black;
+        border-collapse: collapse;
     }
-}
+
+    td.producto,
+    th.producto {
+        width: 75px;
+        max-width: 75px;
+    }
+
+    td.cantidad,
+    th.cantidad {
+        width: 40px;
+        max-width: 40px;
+        word-break: break-all;
+    }
+
+    td.precio,
+    th.precio {
+        width: 40px;
+        max-width: 40px;
+        word-break: break-all;
+    }
+
+    .centrado {
+        text-align: center;
+        align-content: center;
+    }
+
+    .ticket {
+        width: 155px;
+        max-width: 155px;
+    }
+
+    img {
+        max-width: inherit;
+        width: inherit;
+    }
+
+    @media print {
+        .oculto-impresion,
+        .oculto-impresion * {
+            display: none !important;
+        }
+    }
 </style>
