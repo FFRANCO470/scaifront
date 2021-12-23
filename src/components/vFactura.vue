@@ -36,25 +36,25 @@
                     <v-col>
                         <div class="form-group row texto">
                             <label  class="col-sm-5 col-form-label">N. Factura</label>
-                            <label  class="col-sm-5 col-form-label">{{venta.numFactura}}</label>
+                            <label  class="col-sm-5 col-form-label">{{numFactura}}</label>
                         </div>
                     </v-col>
                     <v-col>
                         <div class="form-group row texto">
                             <label  class="col-sm-5 col-form-label">Fecha:</label>
-                            <label  class="col-sm-5 col-form-label">{{cliente.email}}</label>
+                            <label  class="col-sm-5 col-form-label">{{fecha}}</label>
                         </div>
                     </v-col>
                     <v-col>
                         <div class="form-group row texto">
                             <label  class="col-sm-5 col-form-label">Hora:</label>
-                            <label  class="col-sm-5 col-form-label">{{cliente.email}}</label>
+                            <label  class="col-sm-5 col-form-label">{{hora}}</label>
                         </div>
                     </v-col>
                     <v-col>
                         <div class="form-group row texto">
                             <label  class="col-sm-5 col-form-label">Usuario:</label>
-                            <label  class="col-sm-5 col-form-label">{{cliente.email}}</label>
+                            <label  class="col-sm-5 col-form-label">{{usuario}}</label>
                         </div>
                     </v-col>
                 </v-row>
@@ -66,7 +66,7 @@
                         </div>
                         <div class="form-group row texto">
                             <label  class="col-sm-5 col-form-label">Numero de documento:</label>
-                            <label  class="col-sm-5 col-form-label">{{venta.persona}}</label>
+                            <label  class="col-sm-5 col-form-label">{{persona}}</label>
                         </div>
                         <div class="form-group row texto">
                             <label  class="col-sm-5 col-form-label">Numbre:</label>
@@ -93,52 +93,52 @@
                 <!--<v-divider  class="mx-6" inset-margin="100px"  ></v-divider>-->
                 <hr style="margin-top:10px;margin-bottom:10px">
                 
-                <template v-if="venta.tipoFactura!='debito'">
+                <template v-if="tipoFactura!='debito'">
                     <v-row>
                         <v-col>
                             <div class="form-group row texto">
                                 <label  class="col-sm-5 col-form-label">Efectivo:</label>
-                                <label  class="col-sm-5 col-form-label">{{venta.numFactura}}</label>
+                                <label  class="col-sm-5 col-form-label">{{efectivo}}</label>
                             </div>
                         </v-col>
                         <v-col>
                             <div class="form-group row texto">
                                 <label  class="col-sm-5 col-form-label">Nequi:</label>
-                                <label  class="col-sm-5 col-form-label">{{cliente.email}}</label>
+                                <label  class="col-sm-5 col-form-label">{{nequi}}</label>
                             </div>
                         </v-col>
                         <v-col>
                             <div class="form-group row texto">
                                 <label  class="col-sm-5 col-form-label">Tarjeta:</label>
-                                <label  class="col-sm-5 col-form-label">{{cliente.email}}</label>
+                                <label  class="col-sm-5 col-form-label">{{tarjeta}}</label>
                             </div>
                         </v-col>
                         <v-col>
                             <div class="form-group row texto">
                                 <label  class="col-sm-5 col-form-label">Sistecredito:</label>
-                                <label  class="col-sm-5 col-form-label">{{cliente.email}}</label>
+                                <label  class="col-sm-5 col-form-label">{{credito}}</label>
                             </div>
                         </v-col>
                     </v-row>
                 </template>
-                <template v-if="venta.tipoFactura=='debito'">
+                <template v-if="tipoFactura=='debito'">
                     <v-row>
                         <v-col>
                             <div class="form-group row texto">
                                 <label  class="col-sm-5 col-form-label">Efectivo:</label>
-                                <label  class="col-sm-5 col-form-label">{{venta.numFactura}}</label>
+                                <label  class="col-sm-5 col-form-label">{{efectivo}}</label>
                             </div>
                         </v-col>
                         <v-col>
                             <div class="form-group row texto">
                                 <label  class="col-sm-5 col-form-label">Nequi:</label>
-                                <label  class="col-sm-5 col-form-label">{{cliente.email}}</label>
+                                <label  class="col-sm-5 col-form-label">{{nequi}}</label>
                             </div>
                         </v-col>
                         <v-col>
                             <div class="form-group row texto">
                                 <label  class="col-sm-5 col-form-label">Tarjeta:</label>
-                                <label  class="col-sm-5 col-form-label">{{cliente.email}}</label>
+                                <label  class="col-sm-5 col-form-label">{{tarjeta}}</label>
                             </div>
                         </v-col>
                     </v-row>
@@ -148,14 +148,14 @@
 
                 
 
-                <template v-if="venta.tipoFactura=='venta'">
+                <template v-if="tipoFactura=='venta'">
                     <div class="form-group row texto">
                         <label  class="col-sm-5 col-form-label">Descuento:</label>
-                        <label  class="col-sm-5 col-form-label">{{venta.descuento}}</label>
+                        <label  class="col-sm-5 col-form-label">{{descuento}}</label>
                     </div>
                 </template>
 
-                <template v-if="venta.tipoFactura=='abonoabono'">
+                <template v-if="tipoFactura=='abonoabono'">
                     <v-data-table
                         style="margin-top:10px;"
                         :headers="articulosAbonosTitle"
@@ -164,7 +164,7 @@
                     ></v-data-table>
                 </template>
 
-                <template v-if="venta.tipoFactura=='venta'">
+                <template v-if="tipoFactura=='venta'">
                     <v-data-table
                         style="margin-top:10px;"
                         :headers="articulosVentaTitle"
@@ -178,7 +178,7 @@
 </template>
 
 <script>
-    // import axios from 'axios'
+    import axios from 'axios'
     import Swal from 'sweetalert2'
 
 
@@ -187,17 +187,24 @@
             buscar:'',
             buscarDato:'',
             cliente:{},
-            venta:{},
+            tipoFactura:null,
+            numFactura:null,
+            fecha:null,
+            hora:null,
+            usuario:null,
+            persona:null,
+            efectivo:null,
+            nequi:null,
+            tarjeta:null,
+            credito:null,
+            descuento:null,
             articulosAbonosTitle: [
                 {text: 'Categoria',value: 'categoria',class:'black--text',sortable: false},
                 { text: 'Marca', value: 'marca',class:'black--text',sortable: false },
                 { text: 'Referencia', value: 'referencia',class:'black--text',sortable: false },
                 { text: 'Unidades', value: 'cantidad' ,class:'black--text',sortable: false},
             ],
-            articulosAbono: [
-                {categoria: 'Frozen',marca: 200,referencia: 6.0,cantidad: 24,},
-                {categoria: 'Ice',marca: 200,referencia: 9.0,cantidad: 37 }
-            ],
+            articulosAbono: [],
             articulosVentaTitle: [
                 {text: 'Categoria',value: 'categoria',class:'black--text',sortable: false},
                 { text: 'Marca', value: 'marca',class:'black--text',sortable: false },
@@ -206,10 +213,7 @@
                 { text: 'Precio', value: 'precio' ,class:'black--text',sortable: false},
                 { text: 'Total', value: 'totalPrecio' ,class:'black--text',sortable: false},
             ],
-            articulosVenta: [
-                {categoria: 'Frozen',marca: 200,referencia: 6.0,cantidad: 24,precio:8,totalPrecio:7},
-                {categoria: 'Ice',marca: 200,referencia: 9.0,cantidad: 37,precio:8,totalPrecio:7 }
-            ],
+            articulosVenta: [],
 
         }),//data
         created(){
@@ -220,11 +224,10 @@
                 if(!this.$store.state.token && this.$router.currentRoute.name!=="/"){
                     this.$router.push('/');
                 }
-                this.venta.tipoFactura="abonoabono"
             },
 
             //msg de error
-            msjError:function(tata){
+            msjErrores:function(tata){
                 Swal.fire({
                     position: 'top',
                     icon: 'error',
@@ -242,7 +245,7 @@
                     title: tata,
                     showConfirmButton: false,
                     backdrop: 'rgba(55,55,55,0.8)',
-                    timer: 2000})
+                    timer: 3000})
             },
 
             //redireccionar para crear compra
@@ -255,8 +258,133 @@
             },
 
             traerFactura(){
-                this.msjExito(`${this.buscar} con el number ${this.buscarDato}`);
+                let header = {headers:{"token" : this.$store.state.token}};
+
+                axios.get(`venta/ventaByCriterio?buscar=${this.buscar}&buscarDato=${this.buscarDato}`,header,)
+                    .then(response=>{
+                        console.log(response);
+                        if(!response.data.venta){
+                            return this.msjExito("No hay factura coincidente con los datos")
+                        }
+                        if(response.data.venta.length==0){
+                            return this.msjExito("No hay factura coincidente con los datos")
+                        }
+                        this.limpiarDatosFactura(response.data.venta);
+                        // venta=response.data.venta
+                    })
+                    .catch(error=>{
+                        console.log(error.response);
+                        if(!error.response.data.msg){
+                            this.msgError = error.response.data.errors[0].msg;
+                            this.msjErrores(this.msgError);
+                        }else{
+              
+                            this.msgError =error.response.data.msg;
+                            this.msjErrores(this.msgError);
+                        }
+                    })
             },
+
+            limpiarDatosFactura(factura){
+
+                if(factura.length>0){
+                    factura = factura[0];
+                }
+
+                this.tipoFactura = factura.tipoFactura;
+                let date = new Date(factura.createdAt);
+                this.hora = (date.getHours()+5) + ":" + date.getMinutes();
+                this.fecha = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+                this.numFactura = factura.numFactura;
+                this.usuario = factura.usuario.nombreUser;
+                this.persona = factura.persona;
+                this.efectivo = factura.efectivo;    
+                this.nequi = factura.nequi;    
+                this.tarjeta = factura.tarjeta;    
+
+
+                this.traerCliente(this.persona);
+
+                if(factura.tipoFactura=="debito"){
+                    console.log("debito");
+
+                }else if(factura.tipoFactura=="abonoabono"){
+
+                    console.log("abono abono");
+                    this.credito = factura.credito;    
+                    let articulos = factura.articulos;
+                    let articulosLimpios=[];
+
+                    if(articulos.length>0){
+                        articulos.map(function(x){
+                            let codigo = x.sku.split("-")
+                            console.log(codigo);
+                            articulosLimpios.push({
+                                referencia:codigo[2],
+                                categoria:codigo[0],
+                                marca : codigo[1],
+                                cantidad : x.cantidad,
+                            })
+                        })
+                    }
+
+                    this.articulosAbono=articulosLimpios;
+
+                }else{
+                    console.log("venta");
+                    this.credito = factura.credito;    
+                    this.descuento = factura.descuento;  
+
+                    let articulos = factura.articulos;
+                    let articulosLimpios=[];
+
+                    if(articulos.length>0){
+                        articulos.map(function(x){
+
+                            let codigo = x.sku.split("-")
+                            console.log(codigo);
+                            articulosLimpios.push({
+                                referencia:codigo[2],
+                                categoria:codigo[0],
+                                marca : codigo[1],
+                                cantidad : x.cantidad,
+                                precio : x.precio,
+                                totalPrecio:x.precio*x.cantidad
+                            })
+                        })
+                    }  
+
+                    this.articulosVenta=articulosLimpios;
+                }
+                
+            },//limpiarDatosFactura
+
+            traerCliente(cliente){
+                if(cliente!=""){
+
+                    let header = {headers:{"token" : this.$store.state.token}};
+                        axios.get(`cliente/buscando?numDocumento=${cliente}`,header,)
+                            .then(response=>{
+                                console.log(response);
+                                if(response.data.persona!=false){
+                                    this.cliente=response.data.persona;
+                                }else{
+                                    this.msjExito("Cliente no registrado en el sistema");
+                                }
+                            })
+                            .catch(error=>{
+                                console.log(error.response);
+                                if(!error.response.data.msg){
+                                    this.msgError = error.response.data.errors[0].msg;
+                                    this.msjErrores(this.msgError);
+                                }else{
+                                    this.msgError =error.response.data.msg;
+                                    this.msjErrores(this.msgError);
+                                }
+                            })
+                }
+            }//traerCliente
+
 
         },//methodos
 

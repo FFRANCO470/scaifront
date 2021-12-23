@@ -633,9 +633,9 @@
                             this.msjExitoso('estoy facturando')
                             this.traerNumFactura();
                             this.traerArticulosActivos();
-                            //me.limpiarTodo();
+                            me.limpiarTodo();
 
-                            me.crearPDF();
+                           // me.crearPDF();
                             //eventBus.$emit("pasar","la escalandia")
                             
                             //this.$router.push('/aaaa');
