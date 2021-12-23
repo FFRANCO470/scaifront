@@ -49,6 +49,15 @@
                         <v-btn style="margin-right:10px; margin-left:50px;  margin-top:20px"   icon color="#72128E"  @click="traerSalidas()"><v-icon size="40">mdi-magnify</v-icon> </v-btn>
                     </div>
                 </v-row>
+
+                <v-row>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:30px">
+                        <label>Total precio: {{totalVendido}}</label>
+                    </div>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:250px">
+                        <label>Total costo: {{totalCosto}}</label>
+                    </div>
+                </v-row>
                 
                 <template>
                     <v-data-table style="margin-top:50px"  class="elevation-15 "  :headers="salidasTitle" :items="salidas"  :search="search">
@@ -354,10 +363,19 @@
                         }
                     })
             }//borrar
-
-
-
         },//methods
+        computed:{
+            totalVendido(){
+                return this.salidas.reduce((suma,venta)=>{
+                    return suma + parseInt(venta.totalPrecio)
+                },0)
+            },
+            totalCosto(){
+                return this.salidas.reduce((suma,venta)=>{
+                    return suma + parseInt(venta.totalCosto)
+                },0)
+            },
+        }//computed
     }//export default
 </script>
 <style scoped>

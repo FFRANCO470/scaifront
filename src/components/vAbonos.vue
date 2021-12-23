@@ -49,6 +49,24 @@
                     </div>
                 </v-row>
 
+                <v-row>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:30px">
+                        <label>T. efectivo:{{totalEfectivo}} </label>
+                    </div>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:50px">
+                        <label>T. nequi:{{totalNequi}} </label>
+                    </div>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:50px">
+                        <label>T. tarjeta: {{totalTarjeta}}</label>
+                    </div>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:50px">
+                        <label>T. credito: {{totalCredito}}</label>
+                    </div>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:50px">
+                        <label>T. saldo pendinte: {{totalSaldo}}</label>
+                    </div>
+                </v-row>
+
                 <template>
                     <v-data-table style="margin-top:50px"  class="elevation-15 "  :headers="creditosTitle" :items="abonos"  :search="search">
                         <template v-slot:top>
@@ -56,9 +74,6 @@
                             <v-spacer></v-spacer>
                             <v-text-field   v-model="search"  append-icon="mdi-magnify"  label="Buscar por caracteres"  single-line hide-details></v-text-field>
                             </v-toolbar>
-                        </template>
-                        <template v-slot:[`item.abono`]="{ item }">
-                            {{parseInt(item.efectivo) + parseInt(item.nequi) + parseInt(item.tarjeta) + parseInt(item.credito)}}
                         </template>
                         <template v-slot:[`item.saldo`]="{ item }">
                             {{parseInt(item.saldoAnterior) - parseInt(item.efectivo) - parseInt(item.nequi) - parseInt(item.tarjeta) - parseInt(item.credito)}}
@@ -126,7 +141,6 @@
                             </v-col>
                         </v-row>
                     </v-card>
-
 
                     <v-card style="margin-top:40px; margin-left:30px; width:95%; box-shadow: 0 0 20px #A068B8;padding:15px ">
                         <v-row>
@@ -202,7 +216,10 @@
                 { text: 'factura', value: 'numFactura'  ,class:'purple darken-3 white--text',sortable: false },
                 { text: 'Comentario', value: 'comentario'  ,class:'purple darken-3 white--text',sortable: false },
                 { text: 'Saldo anterior', value: 'saldoAnterior'  ,class:'purple darken-3 white--text',sortable: false },
-                { text: 'Abono', value: 'abono'  ,class:'purple darken-3 white--text',sortable: false },
+                { text: 'Efectivo', value: 'efectivo'  ,class:'purple darken-3 white--text',sortable: false },
+                { text: 'Nequi', value: 'nequi'  ,class:'purple darken-3 white--text',sortable: false },
+                { text: 'Tarjeta', value: 'tarjeta'  ,class:'purple darken-3 white--text',sortable: false },
+                { text: 'Credito', value: 'credito'  ,class:'purple darken-3 white--text',sortable: false },
                 { text: 'Saldo', value: 'saldo'  ,class:'purple darken-3 white--text',sortable: false },
                 { text: 'Opciones', value: 'actions' , class:'purple darken-3 white--text',width:'10%',sortable: false }
             ],
@@ -302,6 +319,7 @@
                             _id:x._id,
                             createdAt:fechaLimpia,
                             time:tiempo,
+                            numFactura:x.numFactura,
                             usuario:x.usuario.nombreUser,
                             persona:x.persona,
                             comentario:x.comentario,
@@ -408,7 +426,9 @@
                         {
                             fecha:x.createdAt, 
                             hora:x.time, 
+                            numFactura:x.numFactura,
                             usuario:x.usuario,  
+                            persona:x.persona,  
                             saldoAnterior:x.saldoAnterior,  
                             efectivo:x.efectivo,
                             nequi:x.nequi,
@@ -422,10 +442,34 @@
                 XLSX.utils.book_append_sheet(workbook, data, filename)
                 XLSX.writeFile(workbook, `${filename}.xlsx`)
             },//exportarExcel
-
-           
-
-        },
+        },//methodos
+         computed:{
+            totalEfectivo(){
+                return this.abonos.reduce((suma,venta)=>{
+                    return suma + parseInt(venta.efectivo)
+                },0)
+            },
+            totalNequi(){
+                return this.abonos.reduce((suma,venta)=>{
+                    return suma + parseInt(venta.nequi)
+                },0)
+            },
+            totalTarjeta(){
+                return this.abonos.reduce((suma,venta)=>{
+                    return suma + parseInt(venta.tarjeta)
+                },0)
+            },
+            totalCredito(){
+                return this.abonos.reduce((suma,venta)=>{
+                    return suma + parseInt(venta.credito)
+                },0)
+            },
+            totalSaldo(){
+                return this.abonos.reduce((suma,venta)=>{
+                    return suma + parseInt(venta.saldoAnterior) - parseInt(venta.efectivo) - parseInt(venta.nequi) - parseInt(venta.tarjeta) -parseInt(venta.credito)
+                },0)
+            },
+        }
     }//export default
 </script>
 

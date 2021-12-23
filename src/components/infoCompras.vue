@@ -51,6 +51,15 @@
                     </div>
                 </v-row>
 
+                <v-row>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:30px">
+                        <label>Total precio: {{totalVendido}}</label>
+                    </div>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:250px">
+                        <label>Total costo: {{totalCosto}}</label>
+                    </div>
+                </v-row>
+
                 <template>
                     <v-data-table style="margin-top:50px"  class="elevation-15 "  :headers="comprasTitle" :items="compras"  :search="search">
                         <template v-slot:top>
@@ -378,9 +387,20 @@
                         }
                     })
             }//borrar
-
-            
         },// methodos
+
+        computed:{
+            totalVendido(){
+                return this.compras.reduce((suma,venta)=>{
+                    return suma + parseInt(venta.totalPrecio)
+                },0)
+            },
+            totalCosto(){
+                return this.compras.reduce((suma,venta)=>{
+                    return suma + parseInt(venta.totalCosto)
+                },0)
+            },
+        }//computed
     }
 </script>
 
