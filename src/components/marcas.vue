@@ -13,7 +13,7 @@
             <v-icon size="25">mdi-file-excel-outline</v-icon>Exportar
           </v-btn>
           <div style="margin-top:50px;margin-right:30px">
-            <v-btn  depressed dark  class="mb-2 purple darken-3 white--text"  @click="dialog=true"  > <v-icon size="20">mdi-plus</v-icon> Nuevo </v-btn>
+            <v-btn  depressed dark  class="mb-2 purple darken-3 white--text"  @click="agregarMarca()"  > <v-icon size="20">mdi-plus</v-icon> Nuevo </v-btn>
           </div>
         </v-row>
         <v-row>
@@ -140,6 +140,11 @@ import XLSX from "xlsx"
           showConfirmButton: false,
           backdrop: 'rgba(55,55,55,0.8)',
           timer: 2000})
+      },
+
+      agregarMarca(){
+        this.dialog = true;
+        this.editedItem.nombre = "";
       },
 
       //Traer todas las marcas
@@ -328,10 +333,15 @@ import XLSX from "xlsx"
       exportExcel(){
         let me = this
         let exportarMarcas =[];
+
+        if(me.marcas.length>1000){
+          return this.msjError("Max. 1000 datos");
+        }
+
         me.marcas.map(function(x){
           exportarMarcas.push(
             {
-              categoria:x.nombre,
+              marcas:x.nombre,
               estado:x.estado
             }
           );

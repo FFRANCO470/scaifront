@@ -257,7 +257,22 @@
                 this.msjExito("sirvo ._.");
             },
 
+            borrar(){
+                this.tipoFactura=null;
+                this.numFactura=null;
+                this.fecha=null;
+                this.hora=null;
+                this.usuario=null;
+                this.persona=null;
+                this.efectivo=null;
+                this.nequi=null;
+                this.tarjeta=null;
+                this.credito=null;
+                this.descuento=null;
+            },
+
             traerFactura(){
+                this.borrar();
                 let header = {headers:{"token" : this.$store.state.token}};
 
                 axios.get(`venta/ventaByCriterio?buscar=${this.buscar}&buscarDato=${this.buscarDato}`,header,)

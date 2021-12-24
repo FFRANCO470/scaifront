@@ -635,7 +635,7 @@
                             this.traerArticulosActivos();
                             me.limpiarTodo();
 
-                           // me.crearPDF();
+                           me.crearPDF();
                             //eventBus.$emit("pasar","la escalandia")
                             
                             //this.$router.push('/aaaa');
@@ -755,7 +755,7 @@
 
                 doc.text("Observaciones", 28,158,{charSpace:0.3});
                 doc.text("Velen campanas de velen que los angeles canta que noche que esta bien", 2,162,{maxWidth:"70",charSpace:0.3});
-
+                
                 doc.autoPrint({variant: 'conform'});
                 doc.save('autoprint.pdf');
 

@@ -168,7 +168,7 @@
                         <v-container fluid>
                             <v-row> 
                                 <v-btn icon style="margin-left:50px;margin-top:50px;" color="#AF7AC5"  @click="cambioPage(1,false)"  class="mb-4" >
-                                    <v-icon size="70" >mdi-arrow-left-bold-circle-outline</v-icon>
+                                    <v-icon size="50" >mdi-arrow-left-bold-circle-outline</v-icon>
                                 </v-btn>
                             </v-row>
                             <v-row> 
@@ -189,140 +189,125 @@
                                         <div>
                                             <v-layout justify-left  >
                                             <label  class="col-sm-4 col-form-label" style="text-align:left">Referencia:</label>
-                                            <label  class="col-sm-4 col-form-label" style="text-align:left">{{this.editedItem.referencia}}</label>
+                                            <label  class="col-sm-4 col-form-label" style="text-align:left">{{this.articuloDetallesReferencia}}</label>
                                             </v-layout>
                                         </div>
                                     </v-card>
                                 </v-col>
                                 <v-col>
                                     <v-card style="margin-top:20px;box-shadow: 0 0 20px #A068B8; width:100%" >
-                                        <div >
-                                            <v-layout justify-left>
-                                            <label  class="col-sm-4 col-form-label" style="text-align:left">Codigo de barras:</label>
+                                        <div>
+                                            <v-layout justify-left  >
+                                            <label  class="col-sm-4 col-form-label" style="text-align:left">Precio unidad:</label>
+                                            <div style="width:150px"><v-text-field v-model="articulosDetallesPrecio" ></v-text-field></div>
+                                            <v-btn class="botones" style="margin-top:10px" icon color="#72128E" @click="actualizarPrecio(articulosDetallesPrecio)"><v-icon>mdi-reload</v-icon>  </v-btn>
                                             </v-layout>
                                         </div>
-                                        <div >
-                                            <v-layout justify-left>
-                                            <label  class="col-sm-4 col-form-label" style="text-align:left">||||||||||</label>
+                                        <div>
+                                            <v-layout justify-left  >
+                                            <label  class="col-sm-4 col-form-label" style="text-align:left">Costo unidad:</label>
+                                            <div style="width:150px"><v-text-field v-model="articulosDetallesCosto" ></v-text-field></div>
+                                            <v-btn class="botones" style="margin-top:10px" icon color="#72128E" @click="actualizarCosto(articulosDetallesCosto)"><v-icon>mdi-reload</v-icon>  </v-btn>
+                                            </v-layout>
+                                        </div>
+                                        <div>
+                                            <v-layout justify-left  >
+                                            <label  class="col-sm-4 col-form-label" style="text-align:left">Rentabilidad unidad:</label>
+                                            <label  class="col-sm-4 col-form-label" style="text-align:left">$ {{articulosDetallesRentabilidad}} %</label>
                                             </v-layout>
                                         </div>
                                     </v-card>
                                 </v-col>
                             </v-row>
-
-                            <!--tabla con la info de articulos-->
                             <v-row>
-                                <v-col style="margin-top:10px">
-                                    
-                                    <table class="table1">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th scope="col2" >Disponibles</th>
-                                                <th scope="col" >Separadas</th>
-                                                <th scope="col" >Vendidas</th>
-                                                <th scope="col" >Salieron</th>
-                                                <th scope="col" >Compraron</th>  
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th scope="row">Diferencia</th>
-                                                <td>{{editedItem.cantDisponibles*(editedItem.precio-editedItem.costo)}}</td>
-                                                <td>{{editedItem.cantSeparadas*(editedItem.precio-editedItem.costo)}}</td>
-                                                <td>{{editedItem.cantVendieron*(editedItem.precio-editedItem.costo)}}</td>
-                                                <td>{{editedItem.cantSalieron*(editedItem.precio-editedItem.costo)}}</td>
-                                                <td>{{editedItem.cantCompradas*(editedItem.precio-editedItem.costo)}}</td>  
-                                            </tr>
-                                        </tfoot>
-                                        <tbody>
-                                            <!--primera fila-->
-                                            <tr>
-                                                <th scope="row">Unidades</th>
-                                                <td>
-                                                    <input  type="text" class="form-control mb-3 llenarTexto" v-model="editedItem.cantDisponibles"  >
-                                                    <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarDisponibles(editedItem.cantDisponibles)">
-                                                        <v-icon>mdi-reload</v-icon>  
-                                                    </v-btn>
-                                                </td>
-                                                <td>
-                                                    <input  type="text" class="form-control mb-3 llenarTexto" v-model="editedItem.cantSeparadas"  >
-                                                    <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarAlmacenadas(editedItem.cantSeparadas)">
-                                                        <v-icon>mdi-reload</v-icon>  
-                                                    </v-btn>
-                                                </td>
-                                                <td>
-                                                    <input  type="text" class="form-control mb-3 llenarTexto" v-model="editedItem.cantVendieron"  >
-                                                    <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarVendieron(editedItem.cantVendieron)">
-                                                        <v-icon>mdi-reload</v-icon>  
-                                                    </v-btn>
-                                                </td>
-                                                <td>
-                                                    <input  type="text" class="form-control mb-3 llenarTexto" v-model="editedItem.cantSalieron"  >
-                                                    <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarSalieron(editedItem.cantSalieron)">
-                                                        <v-icon>mdi-reload</v-icon>  
-                                                    </v-btn>
-                                                </td>
-                                                <td>
-                                                    <input  type="text" class="form-control mb-3 llenarTexto" v-model="editedItem.cantCompradas"  >
-                                                    <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarCompradas(editedItem.cantCompradas)">
-                                                        <v-icon>mdi-reload</v-icon>  
-                                                    </v-btn>
-                                                </td>
-                                            </tr>
-
-                                            <!--segunda fila-->
-                                            <tr>
-                                                <th scope="row">Costo</th>
-                                                <td>
-                                                    <input  type="text" class="form-control mb-3 llenarTexto" v-model="editedItem.costo"  >
-                                                    <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarCosto(editedItem.costo)">
-                                                        <v-icon>mdi-reload</v-icon>  
-                                                    </v-btn>
-                                                </td>
-                                                <td>{{editedItem.costo}}</td>
-                                                <td>{{editedItem.costo}}</td>
-                                                <td>{{editedItem.costo}}</td>
-                                                <td>{{editedItem.costo}}</td>
-                                            </tr>
-
-                                            <!--tercera fila-->
-                                            <tr>
-                                                <th scope="row">Precio</th>
-                                                <td>
-                                                    <input  type="text" class="form-control mb-3 llenarTexto" v-model="editedItem.precio"  >
-                                                    <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarPrecio(editedItem.precio)">
-                                                        <v-icon>mdi-reload</v-icon>  
-                                                    </v-btn>
-                                                </td>
-                                                <td>{{editedItem.precio}}</td>
-                                                <td>{{editedItem.precio}}</td>
-                                                <td>{{editedItem.precio}}</td>
-                                                <td>{{editedItem.precio}}</td>
-                                            </tr>
-
-                                            <!--cuarta fila-->
-                                            <tr>
-                                                <th scope="row">Total costo</th>
-                                                <td>{{editedItem.cantDisponibles*editedItem.costo}}</td>
-                                                <td>{{editedItem.cantSeparadas*editedItem.costo}}</td>
-                                                <td>{{editedItem.cantVendieron*editedItem.costo}}</td>
-                                                <td>{{editedItem.cantSalieron*editedItem.costo}}</td>
-                                                <td>{{editedItem.cantCompradas*editedItem.costo}}</td>
-                                            </tr>
-
-                                            <!--quinta fila-->
-                                            <tr>
-                                                <th scope="row">Total precio</th>
-                                                <td>{{editedItem.cantDisponibles*editedItem.precio}}</td>
-                                                <td>{{editedItem.cantSeparadas*editedItem.precio}}</td>
-                                                <td>{{editedItem.cantVendieron*editedItem.precio}}</td>
-                                                <td>{{editedItem.cantSalieron*editedItem.precio}}</td>
-                                                <td>{{editedItem.cantCompradas*editedItem.precio}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </v-col>
+                                <table class="table1">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            
+                                            <th scope="col" >Unidades</th>
+                                            <th scope="col" >Total Costo</th>
+                                            <th scope="col" >Total Precio</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Disponibles</th>
+                                            <td>
+                                                <input  type="text" class="form-control mb-3 llenarTexto" v-model="articulosDetallesDisponible"  >
+                                                <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarDisponibles(articulosDetallesDisponible)">
+                                                    <v-icon>mdi-reload</v-icon>  
+                                                </v-btn>
+                                            </td>
+                                            <td>
+                                                {{articulosDetallesDisponible*articulosDetallesCosto}}
+                                            </td>
+                                            <td>
+                                                {{articulosDetallesDisponible*articulosDetallesPrecio}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Separadas</th>
+                                            <td>
+                                                <input  type="text" class="form-control mb-3 llenarTexto" v-model="articulosDetallesSeparadas"  >
+                                                <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarDisponibles(articulosDetallesSeparadas)">
+                                                    <v-icon>mdi-reload</v-icon>  
+                                                </v-btn>
+                                            </td>
+                                            <td>
+                                                {{articulosDetallesSeparadas*articulosDetallesCosto}}
+                                            </td>
+                                            <td>
+                                                {{articulosDetallesSeparadas*articulosDetallesPrecio}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Vendieron</th>
+                                            <td>
+                                                <input  type="text" class="form-control mb-3 llenarTexto" v-model="articulosDetallesVendidas"  >
+                                                <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarDisponibles(articulosDetallesVendidas)">
+                                                    <v-icon>mdi-reload</v-icon>  
+                                                </v-btn>
+                                            </td>
+                                            <td>
+                                                {{articulosDetallesVendidas*articulosDetallesCosto}}
+                                            </td>
+                                            <td>
+                                                {{articulosDetallesVendidas*articulosDetallesPrecio}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Compradas</th>
+                                            <td>
+                                                <input  type="text" class="form-control mb-3 llenarTexto" v-model="articulosDetallesCompradas"  >
+                                                <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarDisponibles(articulosDetallesCompradas)">
+                                                    <v-icon>mdi-reload</v-icon>  
+                                                </v-btn>
+                                            </td>
+                                            <td>
+                                                {{articulosDetallesCompradas*articulosDetallesCosto}}
+                                            </td>
+                                            <td>
+                                                {{articulosDetallesCompradas*articulosDetallesPrecio}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Salieron</th>
+                                            <td>
+                                                <input  type="text" class="form-control mb-3 llenarTexto" v-model="articulosDetallesSalieron"  >
+                                                <v-btn class="botones" style="margin-top:0px" icon color="#72128E" @click="actualizarDisponibles(articulosDetallesSalieron)">
+                                                    <v-icon>mdi-reload</v-icon>  
+                                                </v-btn>
+                                            </td>
+                                            <td>
+                                                {{articulosDetallesSalieron*articulosDetallesCosto}}
+                                            </td>
+                                            <td>
+                                                {{articulosDetallesSalieron*articulosDetallesPrecio}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </v-row>
                         </v-container>
                     </div>
@@ -376,9 +361,16 @@
             ],
 
             //almacena el articulo traido por id
-            articulosDetalles: {},  
+            articulosDetallesPrecio: 0, 
+            articulosDetallesCosto: 0, 
+            articulosDetallesDisponible: 0, 
+            articulosDetallesSeparadas: 0, 
+            articulosDetallesCompradas: 0, 
+            articulosDetallesVendidas: 0, 
+            articulosDetallesSalieron:0,
             articulosDetallesCategoria:'',
             articulosDetallesMarca:'',
+            articuloDetallesReferencia:'',
 
             editedItem: {
                 categoria:'', marca:'', referencia:'',
@@ -432,9 +424,11 @@
             cambioPage(num,id){
                 if(num==1){
                     this.muestra=1
+                    this.borrarArticuloDetalle();
                 }else{
                     this.muestra=2
-                    this.traerArticulo(id)
+                    this.articulos=[];
+                    this.traerArticulo(id);
                 }
             },//cambioPage
 
@@ -618,10 +612,7 @@
                 axios.get(`/articulo/articulo/${id}`,header)
                     .then(response =>{
                         console.log(response.data);
-                        //this.articulosDetalles = response.data.articulo
-                        this.articulosDetallesCategoria=response.data.articulo.categoria.nombre
-                        this.articulosDetallesMarca=response.data.articulo.marca.nombre
-                        this.editarDetalle(response.data.articulo)
+                        this.limpiarArticulo(response.data.articulo)
                     })
                     .catch((error) =>{
                         console.log(error.response);
@@ -634,6 +625,33 @@
                         }
                     })
             },//traerArticulo
+
+            limpiarArticulo(articulo){
+                this.id=articulo._id;
+                this.articulosDetallesPrecio= articulo.precio;
+                this.articulosDetallesCosto= articulo.costo;
+                this.articulosDetallesDisponible= articulo.cantDisponibles;
+                this.articulosDetallesSeparadas= articulo.cantSeparadas;
+                this.articulosDetallesCompradas= articulo.cantCompradas;
+                this.articulosDetallesVendidas= articulo.cantVendieron;
+                this.articulosDetallesSalieron= articulo.cantSalieron;
+                this.articulosDetallesCategoria= articulo.categoria.nombre;
+                this.articulosDetallesMarca= articulo.marca.nombre;
+                this.articuloDetallesReferencia= articulo.referencia;
+            },
+            borrarArticuloDetalle(){
+                this.id="";
+                this.articulosDetallesPrecio=0;
+                this.articulosDetallesCosto=0;
+                this.articulosDetallesDisponible=0;
+                this.articulosDetallesSeparadas=0;
+                this.articulosDetallesCompradas=0;
+                this.articulosDetallesVendidas=0;
+                this.articulosDetallesSalieron=0;
+                this.articulosDetallesCategoria="";
+                this.articulosDetallesMarca="";
+                this.articuloDetallesReferencia="";
+            },
 
             //limpiar formulario
             reset(){
@@ -652,7 +670,6 @@
 
             //abrir dialogo y alistar variables para enviar 
             editar(item){
-                console.log(item);
                 this.id= item._id;
                 this.editedItem.categoria=item.categoria;
                 this.editedItem.marca=item.marca;
@@ -667,21 +684,7 @@
                 this.dialog2=true;
             },//editar
 
-            //alistar variables para editar sin abrir dialogo
-            editarDetalle(item){
-                console.log(item);
-                this.id= item._id;
-                this.editedItem.categoria=item.categoria;
-                this.editedItem.marca=item.marca;
-                this.editedItem.referencia=item.referencia;
-                this.editedItem.costo=item.costo;
-                this.editedItem.precio=item.precio;
-                this.editedItem.cantDisponibles=item.cantDisponibles;
-                this.editedItem.cantSeparadas=item.cantSeparadas;
-                this.editedItem.cantCompradas=item.cantCompradas;
-                this.editedItem.cantSalieron=item.cantSalieron;
-                this.editedItem.cantVendieron=item.cantVendieron;
-            },//editar
+            
       
             //almacenar en la bd
             guardar(){
@@ -821,14 +824,14 @@
                     .catch((error)=>{
                         console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            console.log(error.response);
+                            this.msgError = error.response.data.errors[0].msg;
+                            this.msjError(this.msgError);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            this.msgError = error.response.data.msg;
+                            console.log(error.response.data.msg);
+                            this.msgError =error.response.data.msg;
+                            this.msjError(this.msgError);
                         }
                     });
             },//actualizarMarca
@@ -913,8 +916,6 @@
 
             //actualizar disponible
             actualizarDisponibles(cantDisponibles){
-                console.log(cantDisponibles);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarCantDisponible/${id}`,{cantDisponibles}, header)
@@ -940,8 +941,6 @@
 
             //actualizar almacenadas
             actualizarAlmacenadas(cantSeparadas){
-                console.log(cantSeparadas);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarCantSeparadas/${id}`,{cantSeparadas}, header)
@@ -1049,6 +1048,9 @@
             exportExcel(){
                 let articulosExport=[]
                 let me = this
+                if(me.articulos.length>1000){
+                    return this.msjError("Max. 1000 datos");
+                }
                 me.articulos.map(function(x){
                     articulosExport.push(
                         {
@@ -1073,6 +1075,15 @@
                 XLSX.writeFile(workbook, `${filename}.xlsx`)
             },//exportarExcel
         },//methots
+
+        computed:{
+            articulosDetallesRentabilidad(){
+                let rendimiento = ((this.articulosDetallesPrecio/this.articulosDetallesCosto)-1)*100
+                rendimiento = rendimiento.toFixed(2);
+                return rendimiento
+            }
+        }//computed
+
     }//export default
 </script>
 
@@ -1133,9 +1144,8 @@
     }
 
     .table1 tbody th{
-        color:#fff;
-        text-shadow:1px 1px 1px #A068B8;
-        background-color:#72128E;
+        color:#000000;
+        background-color:#FFFFFF;
         border:1px solid #A068B8;
         border-right:3px solid #A068B8;
         padding:0px 10px;
@@ -1159,21 +1169,11 @@
         border-top-left-radius:5px;
         border-bottom-left-radius:5px;
     }
-    .table1 tfoot td{
-        color: #72128E;
-        font-size:32px;
-        text-align:center;
-        padding:10px 0px;
-        text-shadow:1px 1px 1px #444;
-    }
-    .table1 tfoot th{
-        color:#666;
-    }
     .table1 tbody td{
     
         padding:10px;
         text-align:center;
-        background-color:#E7BBFA;
+        background-color:#FFFFFF;
         border: 2px solid #E7EFE0;
         -moz-border-radius:2px;
         -webkit-border-radius:2px;

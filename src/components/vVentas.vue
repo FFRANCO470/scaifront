@@ -112,7 +112,9 @@
             <template v-if="vista==2">
                 <v-container>
                     <v-row>
-                        <v-btn   @click="cambioPagina(1,false)"  color="black"  icon dark  class="mb-2" ><v-icon size="70" >mdi-arrow-left-bold-circle-outline</v-icon></v-btn>
+                        <v-btn icon style="margin-left:50px;margin-top:50px;" color="#AF7AC5"  @click="cambioPagina(1,false)"  class="mb-4" >
+                            <v-icon size="50" >mdi-arrow-left-bold-circle-outline</v-icon>
+                        </v-btn>
                     </v-row>
 
                     <v-card style="margin-top:40px; margin-left:30px; width:95%; box-shadow: 0 0 20px #A068B8;padding:15px ">
@@ -239,7 +241,7 @@
     export default {
         data:()=>({
             vista:1,
-            tiposVenta:['','venta','abono'],
+            tiposVenta:['todo','venta','abono'],
             typesell:'',
             ventas:[],
             venta:{},

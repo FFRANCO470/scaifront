@@ -8,6 +8,7 @@
                             <label>Categorias</label>
                         </div>
                         <v-spacer></v-spacer>
+
                         <v-btn  
                             depressed 
                             dark  
@@ -17,8 +18,9 @@
                             >
                             <v-icon size="25">mdi-file-excel-outline</v-icon>Exportar
                         </v-btn>
+
                         <div style="margin-top:50px;margin-right:30px">
-                            <v-btn  depressed dark  class="mb-2 purple darken-3 white--text"  @click="dialog=true"  > <v-icon size="20">mdi-plus</v-icon> Nuevo </v-btn>
+                            <v-btn  depressed dark  class="mb-2 purple darken-3 white--text"  @click="agregarCategoria()"  > <v-icon size="20">mdi-plus</v-icon> Nuevo </v-btn>
                         </div>
                     </v-row>
 
@@ -144,6 +146,11 @@
                 timer: 2000})
             },
 
+            agregarCategoria(){
+                this.dialog = true;
+                this.editedItem.nombre = "";
+            },
+
             //Traer todas las categorias
             obtenerCategorias(){
                 let bancandoCategoria = this.buscarCategoriaLetras.trim();
@@ -175,26 +182,26 @@
             obtenerCategoriasActualizada(categoria){
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`categoria?value=${categoria}`,header)
-                .then(response =>{
-                    console.log(response);
-                    this.categorias = response.data.categoria
-                    if(this.categorias.length==0){
-                    this.msjExisto('No hay categorias');
-                    }
-                })
-                .catch((error) =>{
-                    console.log(error);
-                    if(!error.response.data.msg){
-                    console.log(error.response);
-                    this.msgError = error.response.data.errors[0].msg;
-                    this.msjError(this.msgError);
-                    }else{
-                    this.msgError = error.response.data.msg;
-                    console.log(error.response.data.msg);
-                    this.msgError =error.response.data.msg;
-                    this.msjError(this.msgError);
-                    }
-                })
+                    .then(response =>{
+                        console.log(response);
+                        this.categorias = response.data.categoria
+                        if(this.categorias.length==0){
+                        this.msjExisto('No hay categorias');
+                        }
+                    })
+                    .catch((error) =>{
+                        console.log(error);
+                        if(!error.response.data.msg){
+                        console.log(error.response);
+                        this.msgError = error.response.data.errors[0].msg;
+                        this.msjError(this.msgError);
+                        }else{
+                        this.msgError = error.response.data.msg;
+                        console.log(error.response.data.msg);
+                        this.msgError =error.response.data.msg;
+                        this.msjError(this.msgError);
+                        }
+                    })
             },//obtenerCategoriasActualizada
 
             //Limpiar el formulario despues de enviar o editar
@@ -214,122 +221,128 @@
             //para almacenar o editar la categoria
             guardar(){
                 if (this.bd == 0 ){
-                console.log('estoy almacenando :'+this.bd);
-                let header = {headers:{"token" : this.$store.state.token}};
-                const me = this;
-                if(this.editedItem.nombre.trim()===''){
-                    this.msjError('Nombre obligatorio');
-                }else if(this.editedItem.nombre.length>50){
-                    this.msjError('Supero los 50 carácteres');
+                    console.log('estoy almacenando :'+this.bd);
+                    let header = {headers:{"token" : this.$store.state.token}};
+                    const me = this;
+                    if(this.editedItem.nombre.trim()===''){
+                        this.msjError('Nombre obligatorio');
+                    }else if(this.editedItem.nombre.length>50){
+                        this.msjError('Supero los 50 carácteres');
+                    }else{
+                        axios.post('categoria',{ nombre:this.editedItem.nombre},header)
+                            .then((response)=>{
+                                console.log(response);
+                                this.msgError=response.data.msg;
+                                this.msjExisto(this.msgError);
+                                me.obtenerCategoriasActualizada(this.editedItem.nombre)
+                                me.reset();
+                                this.dialog=false;
+                            })
+                            .catch((error)=>{
+                                console.log(error.response);
+                                if(!error.response.data.msg){
+                                console.log(error.response);
+                                this.msgError = error.response.data.errors[0].msg
+                                this.msjError(this.msgError);
+                                }else{
+                                this.msgError = error.response.data.msg
+                                console.log(error.response.data.msg);
+                                this.msjError(this.msgError);
+                                }
+                            })
+                    }
                 }else{
-                    axios.post('categoria',{ nombre:this.editedItem.nombre},header)
-                    .then((response)=>{
-                        console.log(response);
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
-                        me.obtenerCategoriasActualizada(this.editedItem.nombre)
-                        me.reset();
-                        this.dialog=false;
-                    })
-                    .catch((error)=>{
-                        console.log(error.response);
-                        if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg
-                        this.msjError(this.msgError);
-                        }else{
-                        this.msgError = error.response.data.msg
-                        console.log(error.response.data.msg);
-                        this.msjError(this.msgError);
-                        }
-                    })
-                }
-                }else{
-                console.log('estoy editando: '+this.bd);
-                let header = {headers:{"token" : this.$store.state.token}};
-                const me = this;
-                if(this.editedItem.nombre.trim()===''){
-                    this.msjError('Nombre obligatorio');
-                }else if(this.editedItem.nombre.length>50){
-                    this.msjError('Supero los 50 carácteres');
-                }else{
-                    axios.put(`categoria/actualizar/${this.id}`,{ nombre:this.editedItem.nombre}, header )
-                    .then((response)=>{
-                        console.log(response);
-                        console.log('msg');
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
-                        me.obtenerCategoriasActualizada(this.editedItem.nombre),
-                        this.dialog=false;
-                    })
-                    .catch((error)=>{
-                        console.log(error.response);
-                        if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg
-                        this.msjError(this.msgError);
-                        }else{
-                        this.msgError = error.response.data.msg
-                        console.log(error.response.data.msg);
-                        this.msjError(this.msgError);
-                        }  
-                    })
-                }
+                    console.log('estoy editando: '+this.bd);
+                    let header = {headers:{"token" : this.$store.state.token}};
+                    const me = this;
+                    if(this.editedItem.nombre.trim()===''){
+                        this.msjError('Nombre obligatorio');
+                    }else if(this.editedItem.nombre.length>50){
+                        this.msjError('Supero los 50 carácteres');
+                    }else{
+                        axios.put(`categoria/actualizar/${this.id}`,{ nombre:this.editedItem.nombre}, header )
+                            .then((response)=>{
+                                console.log(response);
+                                console.log('msg');
+                                this.msgError=response.data.msg;
+                                this.msjExisto(this.msgError);
+                                me.obtenerCategoriasActualizada(this.editedItem.nombre),
+                                this.dialog=false;
+                            })
+                            .catch((error)=>{
+                                console.log(error.response);
+                                if(!error.response.data.msg){
+                                console.log(error.response);
+                                this.msgError = error.response.data.errors[0].msg
+                                this.msjError(this.msgError);
+                                }else{
+                                this.msgError = error.response.data.msg
+                                console.log(error.response.data.msg);
+                                this.msjError(this.msgError);
+                                }  
+                            })
+                    }
                 }
             },//guardar
 
-            //activar o desactivar
+            //activar o desactivar categoria
             activarDesactivarItem (accion , item) {
                 let id = item._id;
                 let nombre = item.nombre;
                 if(accion == 2){
-                let me = this
-                let header = {headers:{"token" : this.$store.state.token}};
-                axios.put(`categoria/desactivar/${id}`,{}  , header)
-                    .then((response)=>{
-                    console.log(response);
-                    me.obtenerCategoriasActualizada(nombre);
-                    })
-                    .catch((error)=>{
-                    console.log(error);
-                    if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                    }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                    }
-                    });
+                    let me = this
+                    let header = {headers:{"token" : this.$store.state.token}};
+                    axios.put(`categoria/desactivar/${id}`,{}  , header)
+                        .then((response)=>{
+                            console.log(response);
+                            me.obtenerCategoriasActualizada(nombre);
+                            })
+                        .catch((error)=>{
+                            console.log(error);
+                            if(!error.response.data.msg){
+                                console.log(error.response);
+                                this.msgError = error.response.data.errors[0].msg;
+                                this.msjError(this.msgError);
+                            }else{
+                                this.msgError = error.response.data.msg;
+                                console.log(error.response.data.msg);
+                                this.msgError =error.response.data.msg;
+                                this.msjError(this.msgError);
+                            }
+                        });
                 }else if (accion==1){
-                let me = this
-                let header = {headers:{"token" : this.$store.state.token}};
-                axios.put(`categoria/activar/${id}`,{},header)
-                    .then((response)=>{
-                    console.log(response);
-                    me.obtenerCategoriasActualizada(nombre);
-                    })
-                    .catch((error)=>{
-                    console.log(error);
-                    if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                    }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                    }
-                    });
+                    let me = this
+                    let header = {headers:{"token" : this.$store.state.token}};
+                    axios.put(`categoria/activar/${id}`,{},header)
+                        .then((response)=>{
+                            console.log(response);
+                            me.obtenerCategoriasActualizada(nombre);
+                        })
+                        .catch((error)=>{
+                            console.log(error);
+                            if(!error.response.data.msg){
+                                console.log(error.response);
+                                this.msgError = error.response.data.errors[0].msg;
+                                this.msjError(this.msgError);
+                            }else{
+                                this.msgError = error.response.data.msg;
+                                console.log(error.response.data.msg);
+                                this.msgError =error.response.data.msg;
+                                this.msjError(this.msgError);
+                            }
+                        });
                 }
             },//activarDesactivarItem
 
+            //exportar datos en excel
             exportExcel(){
                 let me = this
                 let categoriasExport=[]
+
+                if(me.categorias.length>1000){
+                    return this.msjError("Max. 1000 datos");
+                }
+
                 me.categorias.map(function(x){
                     categoriasExport.push(
                         {

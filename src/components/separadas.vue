@@ -1,46 +1,55 @@
 <template >
     <div>
         <v-container fluid>
+            <template>
+                <v-row>
+                    <div style="color: #72128E;  font-size:32px;  text-align:center; margin-top:50px;margin-left:30px">
+                        <label>Unidades separadas</label>
+                    </div>
+                    <v-spacer></v-spacer>
 
-                <v-card style="margin-top:20px;box-shadow: 0 0 20px #A068B8;" >
-                    <v-row style="margin-left:10px;margin-top:10px;"> 
-                        <v-col>   
-                            <div class="form-group row texto">
-                                <label  class="col-sm-4 col-form-label" style="margin-left:10px;">Total prendas:</label>
-                                <label  class="col-sm-4 col-form-label" style="margin-left:10px;">{{totalPrendas}}</label>
-                            </div>
-                        </v-col>
-                        <v-col>
-                            <div class="form-group row texto">
-                                <label  class="col-sm-4 col-form-label" style="margin-left:10px;">Total Ingreso:</label>
-                                <label  class="col-sm-4 col-form-label" style="margin-left:10px;">{{totalIngreso}}</label>
-                            </div>
-                        </v-col>
-                        <v-col>
-                            <div class="form-group row texto">
-                                <label  class="col-sm-4 col-form-label" style="margin-left:10px;">Total Costo:</label>
-                                <label  class="col-sm-4 col-form-label" style="margin-left:10px;">{{totalCosto}}</label>
-                            </div>
-                        </v-col>
-                    </v-row>
-                </v-card>   
-            
+                    <v-btn  
+                        depressed 
+                        dark  
+                        class="mb-2 purple darken-3 white--text"  
+                        style="margin-right:30px; margin-left:20px;  margin-top:50px"   
+                        @click="exportExcel()"
+                        >
+                        <v-icon size="25">mdi-file-excel-outline</v-icon>Exportar
+                    </v-btn>
+                </v-row>
+
+                <v-row style="margin-left:10px;margin-top:10px;"> 
+                    <v-col>   
+                        <div class="form-group row texto">
+                            <label  class="col-sm-4 col-form-label" style="margin-left:10px;">Total prendas:</label>
+                            <label  class="col-sm-4 col-form-label" style="margin-left:10px;">{{totalPrendas}}</label>
+                        </div>
+                    </v-col>
+                    <v-col>
+                        <div class="form-group row texto">
+                            <label  class="col-sm-4 col-form-label" style="margin-left:10px;">Total Ingreso:</label>
+                            <label  class="col-sm-4 col-form-label" style="margin-left:10px;">{{totalIngreso}}</label>
+                        </div>
+                    </v-col>
+                    <v-col>
+                        <div class="form-group row texto">
+                            <label  class="col-sm-4 col-form-label" style="margin-left:10px;">Total Costo:</label>
+                            <label  class="col-sm-4 col-form-label" style="margin-left:10px;">{{totalCosto}}</label>
+                        </div>
+                    </v-col>
+                </v-row>
+            </template>
+            <template>
                 <v-data-table style="margin-top:50px" class=" elevation-15 " :headers="columnas" :items="articulos" :search="search">
                     <template v-slot:top>
                         <!--parte arriba tabla-->
                         <v-toolbar flat  >
-                        <v-toolbar-title>Unidades en almacen</v-toolbar-title>
+                        
                         
                             <!--buscar-->
                             <v-spacer></v-spacer>
                             <v-text-field   v-model="search"  append-icon="mdi-magnify"  label="Buscar categoria, marca o referencia"  single-line hide-details></v-text-field>
-                            <v-divider  class="mx-4" inset  vertical ></v-divider>
-                            <v-spacer></v-spacer>
-                            <!--boton de excel-->
-                            <v-btn style="margin-right:10px; margin-left:20px;  margin-top:20px"   icon color="#72128E"  @click="exportExcel()">
-                                <v-icon size="40">mdi-file-excel-outline</v-icon>
-                            </v-btn>
-
                             <!--cuadro de texto para editar articulo-->
                             <v-dialog v-model="dialog" max-width="500px" >
                                 <v-card >
@@ -75,6 +84,9 @@
                     </template>
     
                 </v-data-table>
+            </template>
+            
+                
             
         </v-container>
     </div>
@@ -124,7 +136,7 @@
                     icon: 'error',
                     title: tata,
                     showConfirmButton: false,
-                    background: 'black',
+                    backdrop: 'rgba(55,55,55,0.8)',
                     timer: 3000})
             },
             msjExito:function(tata){
@@ -133,7 +145,7 @@
                     icon: 'success',
                     title: tata,
                     showConfirmButton: false,
-                    background: 'black',
+                    backdrop: 'rgba(55,55,55,0.8)',
                     timer: 2000})
             },
 
@@ -167,30 +179,9 @@
                 this.dialog=true;
             },//editar
 
-            exportExcel(){
-                let articulosExport=[]
-                let me = this
-                me.articulos.map(function(x){
-                articulosExport.push(
-                    {
-                    categoria:x.categoria.nombre, 
-                    marca:x.marca.nombre, 
-                    referencia:x.referencia,  
-                    costo:x.costo,
-                    precio:x.precio,
-                    cantSeparadas:x.cantSeparadas
-                    }
-                );
-                })
+            
 
-                let data = XLSX.utils.json_to_sheet(articulosExport)
-                const workbook = XLSX.utils.book_new()
-                const filename = 'En_almacen'
-                XLSX.utils.book_append_sheet(workbook, data, filename)
-                XLSX.writeFile(workbook, `${filename}.xlsx`)
-            },//exportarExcel
-
-            //actualizar almacenadas
+            //actualizar unidades separadas
             actualizarAlmacenadas(cantSeparadas){
                 console.log(cantSeparadas);
                 console.log(this.id);
@@ -219,6 +210,35 @@
                     }
                 });
             },//actualizarAlmacenadas
+
+
+            exportExcel(){
+                let articulosExport=[]
+                let me = this
+
+                if(me.articulos.length>1000){
+                    return this.msjError("Max. 1000 datos");
+                }
+
+                me.articulos.map(function(x){
+                articulosExport.push(
+                    {
+                    categoria:x.categoria.nombre, 
+                    marca:x.marca.nombre, 
+                    referencia:x.referencia,  
+                    costo:x.costo,
+                    precio:x.precio,
+                    cantSeparadas:x.cantSeparadas
+                    }
+                );
+                })
+
+                let data = XLSX.utils.json_to_sheet(articulosExport)
+                const workbook = XLSX.utils.book_new()
+                const filename = 'En_almacen'
+                XLSX.utils.book_append_sheet(workbook, data, filename)
+                XLSX.writeFile(workbook, `${filename}.xlsx`)
+            },//exportarExcel
 
 
         },//methods
@@ -250,5 +270,6 @@
         color: #000000;
         font-size: 20px;
         text-align:left;
+        color: #72128E;
     }
 </style>
