@@ -683,9 +683,7 @@
                 this.editedItem.cantVendieron=item.cantVendieron;
                 this.dialog2=true;
             },//editar
-
-            
-      
+ 
             //almacenar en la bd
             guardar(){
                 let header = {headers:{"token" : this.$store.state.token}};
@@ -741,7 +739,6 @@
                 let categoria = item.categoria._id;
                 let marca = item.marca._id;
                 if(accion == 2){
-                    console.log(id);
                     let header = {headers:{"token" : this.$store.state.token}};
                     axios.put(`articulo/desactivar/${id}`,{}, header)
                         .then((response)=>{

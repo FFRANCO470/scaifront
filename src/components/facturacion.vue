@@ -678,6 +678,7 @@
                var sise = 10
 
                 var doc = new jsPDF();
+                
                 doc.beginFormObject(0, 0, 250, 600)
 
                 doc.roundedRect(1, 1, 86, 169, 0, 0)
@@ -755,9 +756,22 @@
 
                 doc.text("Observaciones", 28,158,{charSpace:0.3});
                 doc.text("Velen campanas de velen que los angeles canta que noche que esta bien", 2,162,{maxWidth:"70",charSpace:0.3});
+
+                // doc.autoPrint({variant: 'conform'});
+                // doc.save('autoprint.pdf');
+
+                doc.output('dataurlnewwindow');
+
+                // var string = doc.output('datauristring');
+
+                // var iframe = "<iframe width='100%' height='100%' src='" + string + "'></iframe>"
+
+                // var x = window.open();
+                // x.document.open();
+                // x.document.write(iframe);
+                // x.document.close();
                 
-                doc.autoPrint({variant: 'conform'});
-                doc.save('autoprint.pdf');
+                
 
 
             }//crearPDF
