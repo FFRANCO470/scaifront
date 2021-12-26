@@ -29,7 +29,7 @@
                         </v-list-item-content>
                     </v-list-item> 
                 </template>
-                
+
                 <!--facturacion-->
                 <template v-if="this.$store.state.rol =='administrador' || this.$store.state.rol =='vendedor'">
                     <v-list-item :to="{path:'/facturacion'}">
@@ -53,7 +53,7 @@
                         </v-list-item-content>
                     </v-list-item> 
                 </template>
-                
+
                 <!--crear compra-->
                 <template v-if="this.$store.state.rol =='administrador' || this.$store.state.rol =='vendedor'">
                     <v-list-item :to="{path:'/crearCompra'}">
@@ -96,42 +96,6 @@
                     </v-list-group>
                 </template>
 
-                <!--articulos
-                    <template v-if="this.$store.state.rol =='administrador'">
-                    <v-list-item :to="{path:'/articulos'}">
-                    <v-list-item-action>
-                        <v-icon class="white--text">mdi-tshirt-crew-outline</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title class=" white--text text-sm-left" >Articulos</v-list-item-title>
-                    </v-list-item-content>
-                    </v-list-item> 
-                    </template>-->
-                    <!--categorias
-                    <template v-if="this.$store.state.rol =='administrador'">
-                    <v-list-item :to="{path:'/categorias'}">
-                    <v-list-item-action>
-                        <v-icon class="white--text">mdi-package-variant</v-icon>
-                    </v-list-item-action>
-
-                    <v-list-item-content>
-                        <v-list-item-title class=" white--text text-sm-left" >Categorías</v-list-item-title>
-                    </v-list-item-content>
-                    </v-list-item> 
-                    </template>-->
-                    <!--marcas
-                    <template v-if="this.$store.state.rol =='administrador'">
-                    <v-list-item :to="{path:'/marcas'}">
-                    <v-list-item-action>
-                        <v-icon class="white--text">mdi-label-outline</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title class=" white--text text-sm-left" >Marcas</v-list-item-title>
-                    </v-list-item-content>
-                    </v-list-item> 
-                    </template>-->
-        
-                
                 <!--clientes-->
                 <template v-if="this.$store.state.rol =='administrador'">
                     <v-list-item :to="{path:'/clientes'}">
@@ -203,11 +167,9 @@
                         </v-list-item-content>
                     </v-list-item> 
                 </template>
-
-        
             </v-list>
-        </v-navigation-drawer>
 
+        </v-navigation-drawer>
     </div>
 </template>
 
@@ -239,7 +201,6 @@
         
             }//return
         },//data
-        
         methods:{
 
             //Deja la bariable golbal token igual a nada y oculta el menu
@@ -251,15 +212,3 @@
         }//methods
     };//export
 </script>
-
-
-<style>
-
-@media print {
-        .oculto-impresion,
-        .oculto-impresion * {
-            display: none !important;
-        }
-    }
-</style>
-

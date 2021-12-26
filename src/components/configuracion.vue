@@ -105,7 +105,7 @@
                 }
             },
 
-            //msg alerta
+            //msg error
             msjError:function(tata){
                 Swal.fire({
                     position: 'top',
@@ -118,6 +118,7 @@
                 })
             },//msjError
 
+            //msg exito
             msjExisto:function(tata){
                 Swal.fire({
                     position: 'top',
@@ -133,23 +134,20 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`setting`,header)
                     .then(response =>{
-                    console.log(response.data);
-                    this.datosAlmacen = response.data.configuraciones
+                        this.datosAlmacen = response.data.configuraciones
                     })
                     .catch((error) =>{
-                    console.log(error.response);
-                    if(!error.response.data.msg){
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                    }else{
-                        if(error.response.data.msg==false){
-                            this.msjAlerta('Configuracion basica no creada');
+                        if(!error.response.data.msg){
+                            this.msgError = error.response.data.errors[0].msg;
+                            this.msjError(this.msgError);
                         }else{
-                            this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
+                            if(error.response.data.msg==false){
+                                this.msjError('Configuracion basica no creada');
+                            }else{
+                                let msgErrores = error.response.data.msg
+                                this.msjError(msgErrores);
+                            }
                         }
-                    }
                     })
             },
 
@@ -163,26 +161,20 @@
                 }else{
                     axios.put(`setting/nameStore`,{ nameStore:this.datosAlmacen.nameStore}, header )
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExisto(this.msgError);
+                            this.msjExisto(response.data.msg);
                             this.traerDatos();
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg
-                            this.msjAlerta(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg
+                                this.msjError(msgErrores);
                             }else{
-                            if(error.response.data.msg==false){
-                                this.msjAlerta('Configuracion basica no creada');
-                            }else{
-                                this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
-                            }
-                            
+                                if(error.response.data.msg==false){
+                                    this.msjError('Configuracion basica no creada');
+                                }else{
+                                    let msgErrores = error.response.data.msg
+                                    this.msjError(msgErrores);
+                                }
                             }  
                         })
                 }
@@ -198,25 +190,20 @@
                 }else{
                     axios.put(`setting/nit`,{ nit:this.datosAlmacen.nit}, header )
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExisto(this.msgError);
+                            this.msjExisto(response.data.msg);
                             this.traerDatos();
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg
-                            this.msjAlerta(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg
+                                this.msjError(msgErrores);
                             }else{
-                            if(error.response.data.msg==false){
-                                this.msjAlerta('Configuracion basica no creada');
-                            }else{
-                                this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
-                            }
+                                if(error.response.data.msg==false){
+                                    this.msjError('Configuracion basica no creada');
+                                }else{
+                                    let msgErrores = error.response.data.msg
+                                    this.msjError(msgErrores);
+                                }
                             }  
                         })
                 }
@@ -232,25 +219,20 @@
                 }else{
                     axios.put(`setting/regimen`,{ regimen:this.datosAlmacen.regimen}, header )
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExisto(this.msgError);
+                            this.msjExisto(response.data.msg);
                             this.traerDatos();
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg
-                            this.msjAlerta(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg
+                                this.msjError(msgErrores);
                             }else{
-                            if(error.response.data.msg==false){
-                                this.msjAlerta('Configuracion basica no creada');
-                            }else{
-                                this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
-                            }
+                                if(error.response.data.msg==false){
+                                    this.msjError('Configuracion basica no creada');
+                                }else{
+                                    let msgErrores = error.response.data.msg
+                                this.msjError(msgErrores);
+                                }
                             }  
                         })
                 }
@@ -266,25 +248,20 @@
                 }else{
                     axios.put(`setting/representanteCC`,{ representanteCC:this.datosAlmacen.representanteCC}, header )
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExisto(this.msgError);
+                            this.msjExisto(response.data.msg);
                             this.traerDatos();
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg
-                            this.msjAlerta(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg
+                                this.msjError(msgErrores);
                             }else{
-                            if(error.response.data.msg==false){
-                                this.msjAlerta('Configuracion basica no creada');
-                            }else{
-                                this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
-                            }
+                                if(error.response.data.msg==false){
+                                    this.msjError('Configuracion basica no creada');
+                                }else{
+                                    let msgErrores = error.response.data.msg
+                                this.msjError(msgErrores);
+                                }
                             }  
                         })
                 }
@@ -300,25 +277,20 @@
                 }else{
                     axios.put(`setting/departamento`,{ departamento:this.datosAlmacen.departamento}, header )
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExisto(this.msgError);
+                            this.msjExisto(response.data.msg);
                             this.traerDatos();
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg
-                            this.msjAlerta(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg
+                                this.msjError(msgErrores);
                             }else{
-                            if(error.response.data.msg==false){
-                                this.msjAlerta('Configuracion basica no creada');
-                            }else{
-                                this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
-                            }
+                                if(error.response.data.msg==false){
+                                    this.msjError('Configuracion basica no creada');
+                                }else{
+                                    let msgErrores = error.response.data.msg
+                                this.msjError(msgErrores);
+                                }
                             }  
                         })
                 }
@@ -334,25 +306,20 @@
                 }else{
                     axios.put(`setting/ciudad`,{ ciudad:this.datosAlmacen.ciudad}, header )
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExisto(this.msgError);
+                            this.msjExisto(response.data.msg);
                             this.traerDatos();
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg
-                            this.msjAlerta(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg
+                                this.msjError(msgErrores);
                             }else{
-                            if(error.response.data.msg==false){
-                                this.msjAlerta('Configuracion basica no creada');
-                            }else{
-                                this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
-                            }
+                                if(error.response.data.msg==false){
+                                    this.msjError('Configuracion basica no creada');
+                                }else{
+                                    let msgErrores = error.response.data.msg
+                                    this.msjError(msgErrores);
+                                }
                             }  
                         })
                 }
@@ -368,25 +335,20 @@
                 }else{
                     axios.put(`setting/direccion`,{ direccion:this.datosAlmacen.direccion}, header )
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExisto(this.msgError);
+                            this.msjExisto(response.data.msg);
                             this.traerDatos();
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg
-                            this.msjAlerta(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg
+                                this.msjError(msgErrores);
                             }else{
-                            if(error.response.data.msg==false){
-                                this.msjAlerta('Configuracion basica no creada');
-                            }else{
-                                this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
-                            }
+                                if(error.response.data.msg==false){
+                                    this.msjError('Configuracion basica no creada');
+                                }else{
+                                    let msgErrores = error.response.data.msg
+                                    this.msjError(msgErrores);
+                                }
                             }  
                         })
                 }
@@ -402,25 +364,20 @@
                 }else{
                     axios.put(`setting/celular`,{ celular:this.datosAlmacen.celular}, header )
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExisto(this.msgError);
+                            this.msjExisto(response.data.msg);
                             this.traerDatos();
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg
-                            this.msjAlerta(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg
+                                this.msjError(msgErrores);
                             }else{
-                            if(error.response.data.msg==false){
-                                this.msjAlerta('Configuracion basica no creada');
-                            }else{
-                                this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
-                            }
+                                if(error.response.data.msg==false){
+                                    this.msjError('Configuracion basica no creada');
+                                }else{
+                                    let msgErrores = error.response.data.msg
+                                    this.msjError(msgErrores);
+                                }
                             }  
                         })
                 }
@@ -436,25 +393,20 @@
                 }else{
                     axios.put(`setting/telefono`,{ telefono:this.datosAlmacen.telefono}, header )
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExisto(this.msgError);
+                            this.msjExisto(response.data.msg);
                             this.traerDatos();
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg
-                            this.msjAlerta(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg
+                                this.msjError(msgErrores);
                             }else{
-                            if(error.response.data.msg==false){
-                                this.msjAlerta('Configuracion basica no creada');
-                            }else{
-                                this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
-                            }
+                                if(error.response.data.msg==false){
+                                    this.msjError('Configuracion basica no creada');
+                                }else{
+                                    let msgErrores = error.response.data.msg
+                                    this.msjError(msgErrores);
+                                }
                             }  
                         })
                 }
@@ -470,25 +422,20 @@
                 }else{
                     axios.put(`setting/email`,{ email:this.datosAlmacen.email}, header )
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExisto(this.msgError);
+                            this.msjExisto(response.data.msg);
                             this.traerDatos();
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg
-                            this.msjAlerta(this.msgError);
-                            }else{
-                            if(error.response.data.msg==false){
-                                this.msjAlerta('Configuracion basica no creada');
-                            }else{
-                                this.msgError = error.response.data.msg
-                            console.log(error.response.data.msg);
-                            this.msjAlerta(this.msgError);
-                            }
+                                let msgErrores = error.response.data.errors[0].msg
+                                this.msjError(msgErrores);
+                                }else{
+                                    if(error.response.data.msg==false){
+                                        this.msjError('Configuracion basica no creada');
+                                    }else{
+                                        let msgErrores = error.response.data.msg
+                                        this.msjError(msgErrores);
+                                }
                             }  
                         })
                     }

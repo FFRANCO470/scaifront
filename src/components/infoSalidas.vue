@@ -182,6 +182,7 @@
                     this.$router.push('/');
                 }
             },
+
             //msg de alerta
             msjError:function(tata){
                 Swal.fire({
@@ -192,6 +193,7 @@
                     backdrop: 'rgba(55,55,55,0.8)',
                     timer: 3000})
             },
+
             msjExito:function(tata){
                 Swal.fire({
                     position: 'top',
@@ -229,21 +231,16 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`movimiento/salida?fechaInicial=${this.fechaInicio}&fechaFinal=${this.fechaFinal}`,header)
                     .then(response=>{
-                        console.log(response);
                         let saliadasBD = response.data.salida;
                         this.limpiarFechas(saliadasBD);
                     })
                     .catch((error) =>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },//traerSalidas
@@ -277,21 +274,16 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`movimiento/salidaById/${item._id}`,header)
                     .then(response=>{
-                        console.log(response);
                         let comprabd = response.data.salida;
                         this.limpiarDatosCompra(comprabd,item);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },
@@ -300,9 +292,7 @@
                 this.salida=item;
                 let articulosLimpios = []
                 let articulosSucios = datos.articulos;
-
                 articulosSucios.map(function(x){
-
                     let codigo = x.sku.split("-")
 
                     articulosLimpios.push({
@@ -346,22 +336,17 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`movimiento/eliminarCompraById/${item._id}`,header)
                     .then(response=>{
-                        console.log(response);
                         let mensaje = response.data.compra;
                         this.msjExito(mensaje);
                         this.salidas=[]
                     })
                     .catch((error) =>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             }//borrar

@@ -359,6 +359,31 @@
                 timer: 2000})
             },
 
+            cambioPage(num,item){
+                if(num==1){
+                    this.muestra=1
+                }else{
+                    this.muestra=2
+                    this.id = item;
+                    this.traerUsuarioById(item);
+                }
+            },
+
+            reset(){
+                this.rol = "";
+                this.nombreUser = "";
+                this.password = "";
+                this.nombre = "";
+                this.cedula = "";
+                this.telefono = "";
+                this.direccion = "";
+                this.tipoCuenta = "";
+                this.numCuenta = "";
+                this.banco = "";
+                this.numContrato = "";
+                this.dialog = true;
+            },
+
             almacenarUsuario(){
                 const me = this;
                 if(this.rol.trim()==='' || this.nombreUser.trim() === '' || 
@@ -379,48 +404,32 @@
                 }else{
                     let header = {headers:{"token" : this.$store.state.token}};
                     axios.post('usuario',{
-                            password:this.password,
-                            rol:this.rol,
-                            nombreUser:this.nombreUser,
-                            nombre:this.nombre,
-                            cedula:this.cedula,
-                            telefono:this.telefono,
-                            direccion:this.direccion,
-                            tipoCuenta:this.tipoCuenta,
-                            numCuenta:this.numCuenta,
-                            banco:this.banco,
-                            numContrato:this.numContrato,
-                        },header)
+                                            password:this.password,
+                                            rol:this.rol,
+                                            nombreUser:this.nombreUser,
+                                            nombre:this.nombre,
+                                            cedula:this.cedula,
+                                            telefono:this.telefono,
+                                            direccion:this.direccion,
+                                            tipoCuenta:this.tipoCuenta,
+                                            numCuenta:this.numCuenta,
+                                            banco:this.banco,
+                                            numContrato:this.numContrato,
+                                        },header)
                         .then((response)=>{
                             me.dialog=false;
                             me.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgErrores = error.response.data.errors[0].msg;
-                                this.msjError(this.msgErrores);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgErrores = error.response.data.msg;
-                                this.msgErrores =error.response.data.msg;
-                                this.msjError(this.msgErrores);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         })
                 }
-            },
-
-            reset(){
-                this.rol = "";
-                this.nombreUser = "";
-                this.password = "";
-                this.nombre = "";
-                this.cedula = "";
-                this.telefono = "";
-                this.direccion = "";
-                this.tipoCuenta = "";
-                this.numCuenta = "";
-                this.banco = "";
-                this.numContrato = "";
-                this.dialog = true;
             },
 
             //traer todos los usuarios
@@ -435,11 +444,11 @@
                     })
                     .catch((error) =>{
                         if(!error.response.data.msg){
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },//obtenerUsuarios
@@ -453,11 +462,11 @@
                     })
                     .catch((error) =>{
                         if(!error.response.data.msg){
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },
@@ -471,11 +480,11 @@
                     })
                     .catch((error) =>{
                         if(!error.response.data.msg){
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },
@@ -492,12 +501,11 @@
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }else{
@@ -509,26 +517,15 @@
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                            this.msgError = error.response.data.msg;
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
             },//activarDesactivarItem
-
-            cambioPage(num,item){
-                if(num==1){
-                    this.muestra=1
-                }else{
-                    this.muestra=2
-                    this.id = item;
-                    this.traerUsuarioById(item);
-                }
-            },
 
             //exportar usuarios por excel
             exportExcel(){
@@ -565,17 +562,15 @@
                 }else{
                     axios.put(`usuario/actualizarNombreUser/${id}`,{nombreUser}, header)
                         .then((response)=>{
-                            this.msgErrores=response.data.msg;
-                            this.msjExito(this.msgErrores);
+                            this.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgErrores = error.response.data.errors[0].msg;
-                                this.msjError(this.msgErrores);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgErrores = error.response.data.msg;
-                                this.msgErrores =error.response.data.msg;
-                                this.msjError(this.msgErrores);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
@@ -591,8 +586,7 @@
                 }else{
                     axios.put(`usuario/actualizarPass/${id}`,{password}, header)
                         .then((response)=>{
-                            this.msgErrores=response.data.msg;
-                            this.msjExito(this.msgErrores);
+                            this.msjExito(response.data.msg);
                             this.passwordNew="";
                         })
                         .catch((error)=>{
@@ -600,7 +594,6 @@
                                 this.msgErrores = error.response.data.errors[0].msg;
                                 this.msjError(this.msgErrores);
                             }else{
-                                this.msgErrores = error.response.data.msg;
                                 this.msgErrores =error.response.data.msg;
                                 this.msjError(this.msgErrores);
                             }
@@ -618,17 +611,15 @@
                     }else{
                         axios.put(`usuario/actualizarNombrePila/${id}`,{nombre}, header)
                             .then((response)=>{
-                                this.msgError=response.data.msg;
-                                this.msjExito(this.msgError);
+                                this.msjExito(response.data.msg);
                             })
                             .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                             });
                     }
@@ -644,17 +635,15 @@
                 }else{
                     axios.put(`usuario/actualizarCedula/${id}`,{cedula}, header)
                         .then((response)=>{
-                            this.msgError=response.data.msg;
-                            this.msjExito(this.msgError);
+                            this.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
@@ -670,17 +659,15 @@
                 }else{
                     axios.put(`usuario/actualizarTelefono/${id}`,{telefono}, header)
                         .then((response)=>{
-                            this.msgError=response.data.msg;
-                            this.msjExito(this.msgError);
+                            this.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
@@ -696,17 +683,15 @@
                 }else{
                     axios.put(`usuario/actualizarDireccion/${id}`,{direccion}, header)
                         .then((response)=>{
-                            this.msgError=response.data.msg;
-                            this.msjExito(this.msgError);
+                            this.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
@@ -722,17 +707,15 @@
                 }else{
                     axios.put(`usuario/actualizarNumcuenta/${id}`,{numCuenta}, header)
                         .then((response)=>{
-                            this.msgError=response.data.msg;
-                            this.msjExito(this.msgError);
+                            this.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
@@ -748,17 +731,15 @@
                 }else{
                     axios.put(`usuario/actualizarTypecuenta/${id}`,{tipoCuenta}, header)
                         .then((response)=>{
-                            this.msgError=response.data.msg;
-                            this.msjExito(this.msgError);
+                            this.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
@@ -774,17 +755,15 @@
                 }else{
                     axios.put(`usuario/actualizarBanco/${id}`,{banco}, header)
                         .then((response)=>{
-                            this.msgError=response.data.msg;
-                            this.msjExito(this.msgError);
+                            this.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
@@ -800,17 +779,15 @@
                 }else{
                     axios.put(`usuario/actualizarContrato/${id}`,{numContrato}, header)
                         .then((response)=>{
-                            this.msgError=response.data.msg;
-                            this.msjExito(this.msgError);
+                            this.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }

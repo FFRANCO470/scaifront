@@ -289,21 +289,16 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`venta/abono?fechaInicial=${this.fechaInicio}&fechaFinal=${this.fechaFinal}`,header)
                     .then(response=>{
-                        console.log(response);
                         let abonosBD = response.data.venta;
                         this.limpiarFechas(abonosBD);
                     })
                     .catch((error) =>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },//traerabonos
@@ -352,7 +347,6 @@
 
                     axios.get(`cliente/buscando?numDocumento=${this.abono.persona}`,header,)
                         .then(response=>{
-                            console.log(response);
                             if(response.data.persona!=false){
                                 this.cliente=response.data.persona;
                             }else{
@@ -360,13 +354,12 @@
                             }
                         })
                         .catch(error=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjErrores(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjErrores(msgErrores);
                             }else{
-                                this.msgError =error.response.data.msg;
-                                this.msjErrores(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjErrores(msgErrores);
                             }
                         })
                 }
@@ -374,21 +367,16 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`venta/ventaId/${item._id}`,header)
                     .then(response=>{
-                        console.log(response);
                         let abonobd = response.data.venta;
                         this.limpiarDatosAbono(abonobd);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
 
@@ -403,7 +391,6 @@
                     articulosSucios.map(function(x){
 
                         let codigo = x.sku.split("-")
-                        console.log(codigo);
                         articulosLimpios.push({
                             referencia:codigo[2],
                             categoria:codigo[0],
@@ -445,7 +432,8 @@
                 XLSX.writeFile(workbook, `${filename}.xlsx`)
             },//exportarExcel
         },//methodos
-         computed:{
+        
+        computed:{
             totalEfectivo(){
                 return this.abonos.reduce((suma,venta)=>{
                     return suma + parseInt(venta.efectivo)

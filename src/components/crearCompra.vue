@@ -170,6 +170,7 @@
                     timer: 2000})
             },
 
+            // mensaje de espera
             msjProceso:function(){
                 Swal.fire({
                     title:"Registrando compra",
@@ -189,7 +190,6 @@
                 let header = {headers:{"token":this.$store.state.token}};
                 axios.get("proveedor/activos",header)
                     .then(response=>{
-                        console.log(response);
                         proveedoresArray = response.data.proveedor;
                         if(proveedoresArray.length>0){
                             proveedoresArray.map(function(x){
@@ -201,14 +201,11 @@
                     })
                     .catch(function(error){
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },
@@ -231,7 +228,6 @@
             //             const wsname = wb.SheetNames[0];
             //             const ws = wb.Sheets[wsname];
             //             this.dataExcel = XLSX.utils.sheet_to_json(ws);
-            //             console.log(this.dataExcel);
             //         }
             //         reader.readAsBinaryString(this.file);
             //     }
@@ -239,9 +235,7 @@
 
             //leer el archivo excel e invocar la fucion para mandar los datos input vuetify
             onChangess(file) {
-                console.log(file);
                 this.file = file ? file : null;
-                console.log(this.file);
                 if (this.file) {
                     const reader = new FileReader();
                     reader.onload = (e) => {
@@ -252,7 +246,6 @@
                         const wsname = wb.SheetNames[0];
                         const ws = wb.Sheets[wsname];
                         this.dataExcel = XLSX.utils.sheet_to_json(ws);
-                        console.log(this.dataExcel);
                     }
                     reader.readAsBinaryString(this.file);
                 }
@@ -260,44 +253,38 @@
 
             //funcion para mandar los datos
             enviarDataExcel(){
-                this.msjProceso()
-                console.log("enviando");
-
+                this.msjProceso();
                 if(this.proveedor.trim()=="" || this.dataExcel.length==0){
                     this.msjError("Proveedor y excel obligatorios");
-
                 }else if(this.dataExcel.length>300){
                     this. msjError("Demasiados articulos, max 300");
-
                 }else{
                     let header = {headers:{"token":this.$store.state.token}};
                     axios.post("/movimiento/crearCompra",{
-                        usuario:this.$store.state.id,
-                        articulos:this.dataExcel,
-                        proveedor:this.proveedor,
-                        comentario:this.comentario,
-                        numFactura:this.numFactura,
-                        totalPrecio:this.totalVendido,
-                        totalCosto:this.totalCosto
-                        },header)
+                                                            usuario:this.$store.state.id,
+                                                            articulos:this.dataExcel,
+                                                            proveedor:this.proveedor,
+                                                            comentario:this.comentario,
+                                                            numFactura:this.numFactura,
+                                                            totalPrecio:this.totalVendido,
+                                                            totalCosto:this.totalCosto
+                                                        },header)
                         .then(response=>{
-                            console.log(response);
                             //let mensaje = response.data.msg;
                             this.file=null;
                             this.dataExcel=[];
                             this.onChangess(null)
                             Swal.close();
-                            this.msjExito("Compra registrada");
+                            this.msjExito(response.data.msg);
                             this.limpiarTodo();
                         })
                         .catch(error=>{
-                            console.log(error.response);
                                 if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         })
                 }

@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <v-btn class="botonFactura"    @click="crearSalida()">
             <v-icon >mdi-clipboard-account-outline</v-icon>Crear salida
         </v-btn>
@@ -133,26 +132,20 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get("articulo/activos",header)
                     .then(response =>{   
-                    console.log(response);  
-                    this.articulosTraidos = response.data.articulo
-                    if(this.articulosTraidos.length==0){
-                        this.msjErrores("No hay articulos");
-                    }else{
-                        this.meterArticulos(this.articulosTraidos);
-                    }
-                    
+                        this.articulosTraidos = response.data.articulo
+                        if(this.articulosTraidos.length==0){
+                            this.msjErrores("No hay articulos");
+                        }else{
+                            this.meterArticulos(this.articulosTraidos);
+                        }
                     })
                     .catch((error) =>{
-                        console.log(error.response);
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjErrores(this.msgError);
+                            let msgErrorer = error.response.data.errors[0].msg;
+                            this.msjErrores(msgErrorer);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjErrores(this.msgError);
+                            let msgErrorer =error.response.data.msg;
+                            this.msjErrores(msgErrorer);
                         }
                     })
             },//trearArticulosActivos
@@ -174,7 +167,6 @@
                     })
                 })
                 this.articulosMostrador=pepe;
-                console.log(this.articulosMostrador);
             },//meterArticulos
 
             //alistar articulos para colocar en la salida
@@ -197,29 +189,25 @@
                 if(this.comentario.length>250){return this.msjErrores("Comentario mayor a 250 caracteres")}
                 let header = {headers:{"token":this.$store.state.token}};
                 axios.post('movimiento/crearSalida',{
-                        usuario:this.$store.state.id,
-                        comentario:this.comentario,
-                        totalPrecio:this.totalVendido,
-                        totalCosto:this.totalCosto,
-                        articulos : this.articulosFactura
-                    },header)
+                                                        usuario:this.$store.state.id,
+                                                        comentario:this.comentario,
+                                                        totalPrecio:this.totalVendido,
+                                                        totalCosto:this.totalCosto,
+                                                        articulos : this.articulosFactura
+                                                    },header)
                         .then((response)=>{
-                            console.log(response);
                             this.traerArticulosActivos();
                             this.articulosFactura=[];
                             this.comentario="";
-                            this.msjExitoso("Salida realizada")
+                            this.msjExitoso(response.data.msg)
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                                console.log(error.response);
-                                this.msgError = error.response.data.errors[0].msg
-                                this.msjErrores(this.msgError);
+                                let msgErrorer = error.response.data.errors[0].msg
+                                this.msjErrores(msgErrorer);
                             }else{
-                                this.msgError = error.response.data.msg
-                                console.log(error.response.data.msg);
-                                this.msjErrores(this.msgError);
+                                let msgErrorer = error.response.data.msg
+                                this.msjErrores(msgErrorer);
                             }
                         })
             }

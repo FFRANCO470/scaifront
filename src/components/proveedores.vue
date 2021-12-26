@@ -168,53 +168,6 @@
                     timer: 2000})
             },
 
-            //traer proveedores
-            obtenerProveedores(){
-                let caracteresClientes = this.buscarClienteLetras.trim();
-                let header = {headers:{"token" : this.$store.state.token}};
-                axios.get(`proveedor/proveedores?value=${caracteresClientes}`,header)
-                    .then(response =>{
-                        console.log(response.data);
-                        this.personas = response.data.proveedor
-                        if(this.personas.length==0){
-                            this.msjExito('No hay Proveedores');
-                        }
-                    })
-                    .catch((error) =>{
-                        console.log(error.response);
-                        if(!error.response.data.msg){
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
-                        }else{
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
-                        }
-                    })
-            },//obtenerProveedores
-            
-            //traer proveedor
-            obtenerProveedoreActivoDesactivo(caracteresClientes){
-                let header = {headers:{"token" : this.$store.state.token}};
-                axios.get(`proveedor/proveedores?value=${caracteresClientes}`,header)
-                    .then(response =>{
-                        console.log(response.data);
-                        this.personas = response.data.proveedor
-                        if(this.personas.length==0){
-                            this.msjExito('No hay Proveedores');
-                        }
-                    })
-                    .catch((error) =>{
-                        console.log(error.response);
-                        if(!error.response.data.msg){
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
-                        }else{
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
-                        }
-                    })
-            },//obtenerProveedores
-
             //limpiar formulario
             reset(){
                 this.editedItem._id=''
@@ -226,7 +179,6 @@
 
             //alistar variables para enviar 
             editar(item){
-                console.log(item);
                 this.id= item._id;
                 this.editedItem._id=item._id
                 this.editedItem.nombre=item.nombre
@@ -234,12 +186,54 @@
                 this.editedItem.telefono=item.telefono
                 this.dialog2=true;
             },//editar
+
+            //traer proveedores
+            obtenerProveedores(){
+                let caracteresClientes = this.buscarClienteLetras.trim();
+                let header = {headers:{"token" : this.$store.state.token}};
+                axios.get(`proveedor/proveedores?value=${caracteresClientes}`,header)
+                    .then(response =>{
+                        this.personas = response.data.proveedor
+                        if(this.personas.length==0){
+                            this.msjExito('No hay Proveedores');
+                        }
+                    })
+                    .catch((error) =>{
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
+                    })
+            },//obtenerProveedores
+            
+            //traer proveedor
+            obtenerProveedoreActivoDesactivo(caracteresClientes){
+                let header = {headers:{"token" : this.$store.state.token}};
+                axios.get(`proveedor/proveedores?value=${caracteresClientes}`,header)
+                    .then(response =>{
+                        this.personas = response.data.proveedor
+                        if(this.personas.length==0){
+                            this.msjExito('No hay Proveedores');
+                        }
+                    })
+                    .catch((error) =>{
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
+                    })
+            },//obtenerProveedores
         
             //almacenar
             guardar(){
                 let header = {headers:{"token" : this.$store.state.token}};
                 const me = this;
-
                 if(this.editedItem.nombre.trim()==='' ){
                     this.msjError('Nombre obligatorio');
                 }else if(this.editedItem.nombre.length>150 ||  this.editedItem.direccion.length>150|| this.editedItem.telefono.length>150 ){
@@ -247,24 +241,21 @@
 
                 }else{
                     axios.post('proveedor',{
-                        nombre:this.editedItem.nombre,
-                        direccion:this.editedItem.direccion,
-                        telefono:this.editedItem.telefono,
-                        },
-                        header)
+                                                nombre:this.editedItem.nombre,
+                                                direccion:this.editedItem.direccion,
+                                                telefono:this.editedItem.telefono,
+                                            },header)
                             .then((response)=>{
-                                console.log(response);
                                 this.dialog=false
-                                this.msgError = response.data.msg;
-                                me.msjExito(this.msgError);
+                                me.msjExito(response.data.msg);
                             })
                             .catch((error)=>{
                                 if(!error.response.data.msg){
-                                    this.msgErrores = error.response.data.errors[0].msg;
-                                    this.msjError(this.msgErrores);
+                                    let msgErroreses = error.response.data.errors[0].msg;
+                                    this.msjError(msgErroreses);
                                 }else{
-                                    this.msgErrores = error.response.data.msg;
-                                    this.msjError(this.msgErrores);
+                                    let msgErroreses = error.response.data.msg;
+                                    this.msjError(msgErroreses);
                                 }
                             })         
                 }
@@ -277,45 +268,38 @@
                     let header = {headers:{"token" : this.$store.state.token}};
                     axios.put(`proveedor/desactivar/${id}`,{}, header)
                         .then((response)=>{
-                            console.log(response);
+                            this.msjExito(response.data.msg);
                             this.obtenerProveedoreActivoDesactivo(item.nombre);
                         })
                         .catch((error)=>{
-                            console.log(error);
                             if(!error.response.data.msg){
-                                this.msgErrores = error.response.data.errors[0].msg;
-                                this.msjError(this.msgErrores);
+                                let msgErroreses = error.response.data.errors[0].msg;
+                                this.msjError(msgErroreses);
                             }else{
-                                this.msgErrores =error.response.data.msg;
-                                this.msjError(this.msgErrores);
+                                let msgErroreses =error.response.data.msg;
+                                this.msjError(msgErroreses);
                             }
                         });
                 }else{
                     let header = {headers:{"token" : this.$store.state.token}};
                         axios.put(`proveedor/activar/${id}`,  {},header)
                             .then((response)=>{
-                                console.log(response);
+                                this.msjExito(response.data.msg);
                                 this.obtenerProveedoreActivoDesactivo(item.nombre);
                             })
                             .catch((error)=>{
-                                console.log(error);
                                 if(!error.response.data.msg){
-                                    console.log(error.response);
-                                    this.msgError = error.response.data.errors[0].msg;
-                                    this.msjError(this.msgError);
+                                    let msgErrores = error.response.data.errors[0].msg;
+                                    this.msjError(msgErrores);
                                 }else{
-                                    this.msgError = error.response.data.msg;
-                                    console.log(error.response.data.msg);
-                                    this.msgError =error.response.data.msg;
-                                    this.msjError(this.msgError);
+                                    let msgErrores =error.response.data.msg;
+                                    this.msjError(msgErrores);
                                 }
                             });
                 }
             },//activarDesactivarItem
 
             actualizarNombre(nombre){
-                console.log(nombre);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 if(nombre.trim()===''){
@@ -325,21 +309,15 @@
                 }else{
                     axios.put(`proveedor/nombre/${id}`,{nombre}, header)
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExito(this.msgError);
-                            })
+                            this.msjExito(response.data.msg);
+                        })
                         .catch((error)=>{
-                            console.log(error);
                             if(!error.response.data.msg){
-                                console.log(error.response);
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                console.log(error.response.data.msg);
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
@@ -347,8 +325,6 @@
             },//actualizarNombre
         
             actualizarDireccion(direccion){
-                console.log(direccion);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 if(direccion.trim()===''){
@@ -358,21 +334,15 @@
                 }else{
                     axios.put(`proveedor/direccion/${id}`,{direccion}, header)
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExito(this.msgError);
+                            this.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
-                            console.log(error);
                             if(!error.response.data.msg){
-                                console.log(error.response);
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                console.log(error.response.data.msg);
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
@@ -380,8 +350,6 @@
             },//actualizarDireccion
 
             actualizarTelefono(telefono){
-                console.log(telefono);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 if(telefono.trim()===''){
@@ -391,21 +359,15 @@
                 }else{
                     axios.put(`proveedor/telefono/${id}`,{telefono}, header)
                         .then((response)=>{
-                            console.log(response);
-                            this.msgError=response.data.msg;
-                            this.msjExito(this.msgError);
+                            this.msjExito(response.data.msg);
                         })
                         .catch((error)=>{
-                            console.log(error);
                             if(!error.response.data.msg){
-                                console.log(error.response);
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError = error.response.data.msg;
-                                console.log(error.response.data.msg);
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
@@ -413,25 +375,25 @@
 
             exportExcel(){
                 let articulosExport=[];
-                    let me = this;
-                    if(me.personas.length>1000){
-                        return this.msjError("Max. 1000 datos");
-                    }
-                    me.personas.map(function(x){
-                        articulosExport.push(
-                            {
-                                nombre:x.nombre, 
-                                telefono:x.telefono, 
-                                direccion:x.direccion
-                            }
-                        );
-                    });
+                let me = this;
+                if(me.personas.length>1000){
+                    return this.msjError("Max. 1000 datos");
+                }
+                me.personas.map(function(x){
+                    articulosExport.push(
+                        {
+                            nombre:x.nombre, 
+                            telefono:x.telefono, 
+                            direccion:x.direccion
+                        }
+                    );
+                });
 
-                    let data = XLSX.utils.json_to_sheet(articulosExport)
-                    const workbook = XLSX.utils.book_new()
-                    const filename = 'proveedores'
-                    XLSX.utils.book_append_sheet(workbook, data, filename)
-                    XLSX.writeFile(workbook, `${filename}.xlsx`)
+                let data = XLSX.utils.json_to_sheet(articulosExport)
+                const workbook = XLSX.utils.book_new()
+                const filename = 'proveedores'
+                XLSX.utils.book_append_sheet(workbook, data, filename)
+                XLSX.writeFile(workbook, `${filename}.xlsx`)
             }//exportExcel
 
         },//methots

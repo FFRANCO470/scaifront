@@ -266,21 +266,16 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`venta/debito?fechaInicial=${this.fechaInicio}&fechaFinal=${this.fechaFinal}`,header)
                     .then(response=>{
-                        console.log(response);
                         let debitosBD = response.data.venta;
                         this.limpiarFechas(debitosBD);
                     })
                     .catch((error) =>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },//traerDebitos
@@ -314,22 +309,17 @@
                 this.debitos = arrayTemporal;        
             },//limpiarFechas
 
-
             //redireccionar para crear compra
             reset(){
                 this.$router.push('/facturacion');
             },//reset
 
             detallesDebitos(item){
-                console.log(item);
                 this.debito=item;
-
                 if(this.debito.persona.trim()!=''){
                     let header = {headers:{"token" : this.$store.state.token}};
-
                     axios.get(`cliente/buscando?numDocumento=${this.debito.persona}`,header,)
                         .then(response=>{
-                            console.log(response);
                             if(response.data.persona!=false){
                                 this.cliente=response.data.persona;
                             }else{
@@ -337,17 +327,15 @@
                             }
                         })
                         .catch(error=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjErrores(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjErrores(msgErrores);
                             }else{
-                                this.msgError =error.response.data.msg;
-                                this.msjErrores(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjErrores(msgErrores);
                             }
                         })
                 }
-
             },
 
             exportExcel(){

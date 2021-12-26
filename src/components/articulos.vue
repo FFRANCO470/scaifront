@@ -2,8 +2,9 @@
     <div>
         <v-app>
             <v-container fluid>
-                
+                <!-- VISTA CON LA TABLA CON ARTICULOS -->
                 <template v-if="muestra == 1">
+
                     <v-row>
                         <div style="color: #72128E;  font-size:32px;  text-align:center; margin-top:50px;margin-left:30px">
                             <label>Articulos</label>
@@ -163,6 +164,7 @@
                     </v-dialog>
                 </template>
 
+                <!-- VISTA CON EL ARTICULO A DETALLE -->
                 <template v-if="muestra==2">
                     <div>
                         <v-container fluid>
@@ -382,11 +384,9 @@
 
         created(){
             this.checkToken();
-            this.selectCategoria();
-            this.selectMarca();
             this.traerCategorias();
             this.traerMarcas();
-        },
+        },//created
 
         methods: {
 
@@ -395,9 +395,9 @@
                 if(!this.$store.state.token && this.$router.currentRoute.name!=="/"){
                 this.$router.push('/');
                 }
-            },
+            },//checkToken
 
-            //msg alerta
+            //mensaje de error
             msjError:function(tata){
                 Swal.fire({
                     position: 'top',
@@ -407,8 +407,9 @@
                     timer: 2000,
                     backdrop: 'rgba(55,55,55,0.8)'
                 })
-            },
+            },//msjError
 
+            //mensaje de exito
             msjExisto:function(tata){
                 Swal.fire({
                     position: 'top',
@@ -418,7 +419,7 @@
                     timer: 2000,
                     backdrop: 'rgba(55,55,55,0.8)'
                 })
-            },
+            },//msjExisto
 
             //cambiar vista
             cambioPage(num,id){
@@ -432,196 +433,101 @@
                 }
             },//cambioPage
 
-            //todas las categorias
+            //traer las categorias activas para filtro y agregar
             traerCategorias(){
-                console.log("sirve");
-                let me = this;
-                let categoriasArray=[];
-                let header = {headers:{"token":this.$store.state.token}};
-                axios.get("categoria",header)
-                    .then(response=>{
-                        console.log(response);
-                        categoriasArray = response.data.categoria;
-                        categoriasArray.map(function(x){
-                        me.categoriasFiltro.push({text: x.nombre, value: x._id});
-                        })
-                        me.categoriasFiltro.unshift("")
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                        }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                        }
-                    });
-            },//traerCategorias
-
-            //todas las marcas
-            traerMarcas(){
-                let me = this;
-                let marcasArray=[];
-                let header = {headers:{"token":this.$store.state.token}};
-                axios.get("marca",header)
-                    .then(response=>{
-                        console.log(response);
-                        marcasArray = response.data.marca;
-                        marcasArray.map(function(x){
-                        me.marcasFiltro.push({text: x.nombre, value: x._id});
-                        })
-                        me.marcasFiltro.unshift("")
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                        }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                        }
-                    });
-            },//traerMarcas
-
-            //categorias activas
-            selectCategoria(){
                 let me = this;
                 let categoriasArray=[];
                 let header = {headers:{"token":this.$store.state.token}};
                 axios.get("categoria/activas",header)
                     .then(response=>{
-                        console.log(response);
                         categoriasArray = response.data.categoria;
-                        categoriasArray.map(function(x){
-                        me.categorias.push({text: x.nombre, value: x._id});
-                        })
+                        if(categoriasArray.length>0){
+                            categoriasArray.map(function(x){
+                                me.categoriasFiltro.push({text: x.nombre, value: x._id});
+                                me.categorias.push({text: x.nombre, value: x._id});
+                            })
+                        }else{
+                            this.msjExisto("No hay categorias activas")
+                        }
+                        me.categoriasFiltro.unshift("")
                     })
                     .catch(function (error) {
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
-            },//seletCategoria
+            },//traerCategorias
 
-            //marcas activas
-            selectMarca(){
+            //traer las marcas activas para filtro y agregar
+            traerMarcas(){
                 let me = this;
                 let marcasArray=[];
                 let header = {headers:{"token":this.$store.state.token}};
                 axios.get("marca/activas",header)
                     .then(response=>{
-                        console.log(response);
                         marcasArray = response.data.marca;
-                        marcasArray.map(function(x){
-                        me.marcas.push({text: x.nombre, value: x._id});
-                        })
+                        if(marcasArray.length>0){
+                            marcasArray.map(function(x){
+                                me.marcasFiltro.push({text: x.nombre, value: x._id});
+                                me.marcas.push({text: x.nombre, value: x._id});
+                            })
+                        }else{
+                            this.msjExisto("No hay marcas activas")
+                        }
+                        me.marcasFiltro.unshift("")
                     })
                     .catch(function (error) {
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
-            },//selectMarcas
+            },//traerMarcas
 
             //traer articulos por marca y/o categoria o todos si esta vacia la peticion
             filtarCateAndMarca(){
-                console.log("categoria: "+this.categoriaFiltrada);
-                console.log("marca: "+this.marcasFiltro);
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.post(`articulo/categoriaAndMarca`,{categoria:this.categoriaFiltrada,marca:this.marcaFiltrada}, header)
-                    .then((response)=>{
-                    console.log(response);
-                    this.articulos = response.data.articulo;
-                    this.categoriaFiltrada='';
-                    this.marcaFiltrada='';
-                    if(this.articulos.length==0){
-                        this.msjExisto('No hay articulos con esos caracteres')
-                    }
-                    })
-                    .catch((error)=>{
-                    console.log(error);
-                    if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                    }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                    }
-                    });
+                        .then((response)=>{
+                            this.articulos = response.data.articulo;
+                            this.categoriaFiltrada='';
+                            this.marcaFiltrada='';
+                            if(this.articulos.length==0){
+                                this.msjExisto('No hay articulos con esos caracteres')
+                            }
+                        })
+                        .catch((error)=>{
+                            if(!error.response.data.msg){
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
+                            }else{
+                                let msgErrores = error.response.data.msg;
+                                this.msjError(msgErrores);
+                            }
+                        });
             },//filtarCateAndMarca
-
-            //traer los articulos por marca y categoria de acuerdo al que se acaba de actualizar
-            despuesActualiar(categoria,marca){
-                let header = {headers:{"token" : this.$store.state.token}};
-                axios.post(`articulo/categoriaAndMarca`,{categoria:categoria,marca:marca}, header)
-                    .then((response)=>{
-                        console.log(response);
-                        this.articulos = response.data.articulo;
-                        this.categoriaFiltrada='';
-                        this.marcaFiltrada='';
-                        if(this.articulos.length==0){
-                        this.msjExisto('No hay articulos con esos caracteres')
-                        }
-                    })
-                    .catch((error)=>{
-                        console.log(error);
-                        if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                        }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                        }
-                    });
-            },//despuesActualiar
 
             //traer el articulo par id
             traerArticulo(id){
-                console.log(id);
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`/articulo/articulo/${id}`,header)
                     .then(response =>{
-                        console.log(response.data);
                         this.limpiarArticulo(response.data.articulo)
                     })
                     .catch((error) =>{
-                        console.log(error.response);
                         if(!error.response.data.msg){
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let errores = error.response.data.errors[0].msg;
+                            this.msjError(errores);
                         }else{
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let errores =error.response.data.msg;
+                            this.msjError(errores);
                         }
                     })
             },//traerArticulo
@@ -638,7 +544,9 @@
                 this.articulosDetallesCategoria= articulo.categoria.nombre;
                 this.articulosDetallesMarca= articulo.marca.nombre;
                 this.articuloDetallesReferencia= articulo.referencia;
-            },
+            },//limpiarArticulo
+
+            //limpiar datos para ver un articulo a detalle
             borrarArticuloDetalle(){
                 this.id="";
                 this.articulosDetallesPrecio=0;
@@ -651,7 +559,7 @@
                 this.articulosDetallesCategoria="";
                 this.articulosDetallesMarca="";
                 this.articuloDetallesReferencia="";
-            },
+            },//borrarArticuloDetalle
 
             //limpiar formulario
             reset(){
@@ -683,7 +591,7 @@
                 this.editedItem.cantVendieron=item.cantVendieron;
                 this.dialog2=true;
             },//editar
- 
+
             //almacenar en la bd
             guardar(){
                 let header = {headers:{"token" : this.$store.state.token}};
@@ -698,38 +606,32 @@
                 ){
                     return this.msjError('faltan campos');
                 }
+
                 if(this.editedItem.referencia.trim().length>50){
                     return this.msjError('Referencia superior a 50 carácteres');
                 }
 
                 axios.post('articulo',{
-                    categoria:this.editedItem.categoria,
-                    marca:this.editedItem.marca,
-                    referencia:this.editedItem.referencia,
-                    precio:this.editedItem.precio,
-                    costo:this.editedItem.costo,
-                    cantDisponibles:this.editedItem.cantDisponibles
-                },
-                header)
+                                        categoria:this.editedItem.categoria,
+                                        marca:this.editedItem.marca,
+                                        referencia:this.editedItem.referencia,
+                                        precio:this.editedItem.precio,
+                                        costo:this.editedItem.costo,
+                                        cantDisponibles:this.editedItem.cantDisponibles
+                                    },header)
                     .then((response)=>{
-                    console.log(response);
-                    this.msgError=response.data.msg;
-                    this.msjExisto(this.msgError);
-                    me.reset();
-                    this.dialog=false
+                        this.msjExisto(response.data.msg);
+                        me.reset();
+                        this.dialog=false
                     })
                     .catch((error)=>{
-                    console.log(error.response);
-                    if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                    }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                    }
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
                     })
             },//guardar
 
@@ -738,72 +640,80 @@
                 let id = item._id;
                 let categoria = item.categoria._id;
                 let marca = item.marca._id;
+
                 if(accion == 2){
+
                     let header = {headers:{"token" : this.$store.state.token}};
                     axios.put(`articulo/desactivar/${id}`,{}, header)
                         .then((response)=>{
-                        console.log(response);
-                        this.despuesActualiar(categoria,marca);
-                        })
-                        .catch((error)=>{
-                        console.log(error);
-                        if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
-                        }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
-                        }
-                        });
-                }else if (accion==1){
-                    let header = {headers:{"token" : this.$store.state.token}};
-                    axios.put(`articulo/activar/${id}`,  {},header)
-                        .then((response)=>{
-                            console.log(response);
+                            this.msjExitoso(response.data.msg);
                             this.despuesActualiar(categoria,marca);
                         })
                         .catch((error)=>{
-                            console.log(error);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                                let msjErrores = error.response.data.errors[0].msg;
+                                this.msjError(msjErrores);
                             }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                                let msjErrores = error.response.data.msg;
+                                this.msjError(msjErrores);
+                            }
+                        });
+                }else if (accion==1){
+
+                    let header = {headers:{"token" : this.$store.state.token}};
+                    axios.put(`articulo/activar/${id}`,  {},header)
+                        .then((response)=>{
+                            this.msjExitoso(response.data.msg);
+                            this.despuesActualiar(categoria,marca);
+                        })
+                        .catch((error)=>{
+                            if(!error.response.data.msg){
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
+                            }else{
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         });
                 }
             },//activarDesactivarItem
 
+            //traer los articulos por marca y categoria de acuerdo al que se acaba de actualizar
+            despuesActualiar(categoria,marca){
+                let header = {headers:{"token" : this.$store.state.token}};
+                axios.post(`articulo/categoriaAndMarca`,{categoria:categoria,marca:marca}, header)
+                    .then((response)=>{
+                        this.articulos = response.data.articulo;
+                        if(this.articulos.length==0){
+                            this.msjExisto('No hay articulos con esos caracteres')
+                        }
+                    })
+                    .catch((error)=>{
+                        if(!error.response.data.msg){
+                            let errores = error.response.data.errors[0].msg;
+                            this.msjError(errores);
+                        }else{
+                            let errores =error.response.data.msg;
+                            this.msjError(errores);
+                        }
+                    });
+            },//despuesActualiar
+
             //actualizar categoria
             actualizarCategoria(categoria){
-                console.log(categoria);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarCategoria/${id}`,{categoria}, header)
                     .then((response)=>{
-                        console.log(response);
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
+                        this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
             },//actualizarCategoria
@@ -814,21 +724,15 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarMarca/${id}`,{marca}, header)
                     .then((response)=>{
-                        console.log(response);
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
+                        this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
             },//actualizarMarca
@@ -838,75 +742,55 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarReferencia/${id}`,{referencia}, header)
                     .then((response)=>{
-                        console.log(response);
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
+                        this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
                         console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
             },//actualizarNombre
 
             //actulizar costo
             actualizarCosto(costo){
-                console.log(costo);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarCosto/${id}`,{costo}, header)
                     .then((response)=>{
-                        console.log(response);
                         this.msgError=response.data.msg;
                         this.msjExisto(this.msgError);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
             },//actualizarCosto
 
             //actualizar precio
             actualizarPrecio(precio){
-                console.log(precio);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarPrecio/${id}`,{precio}, header)
                     .then((response)=>{
-                        console.log(response);
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
+                        this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
             },//actualizarPrecio
@@ -917,21 +801,15 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarCantDisponible/${id}`,{cantDisponibles}, header)
                     .then((response)=>{
-                        console.log(response);
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
+                        this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
             },//actualizarDisponibles
@@ -942,106 +820,76 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarCantSeparadas/${id}`,{cantSeparadas}, header)
                     .then((response)=>{
-                        console.log(response);
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
+                        this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
             },//actualizarAlmacenadas
 
             //actualizar vendidas
             actualizarVendieron(cantVendieron){
-                console.log(cantVendieron);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarCantVendieron/${id}`,{cantVendieron}, header)
                     .then((response)=>{
-                        console.log(response);
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
+                        this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
             },//actualizarVendieron
 
             //actualizar compraron
             actualizarCompradas(cantCompradas){
-                console.log(cantCompradas);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarCantCompradas/${id}`,{cantCompradas}, header)
                     .then((response)=>{
-                        console.log(response);
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
+                        this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
             },//actualizarCompradas
 
             //actualizar compraron
             actualizarSalieron(cantSalieron){
-                console.log(cantSalieron);
-                console.log(this.id);
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarCantSalieron/${id}`,{cantSalieron}, header)
                     .then((response)=>{
-                        console.log(response);
-                        this.msgError=response.data.msg;
-                        this.msjExisto(this.msgError);
+                        this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
             },//actualizarSalieron
-
+            
             exportExcel(){
                 let articulosExport=[]
                 let me = this
@@ -1078,7 +926,7 @@
                 let rendimiento = ((this.articulosDetallesPrecio/this.articulosDetallesCosto)-1)*100
                 rendimiento = rendimiento.toFixed(2);
                 return rendimiento
-            }
+            }//articulosDetallesRentabilidad
         }//computed
 
     }//export default

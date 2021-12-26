@@ -231,25 +231,19 @@
             },
 
             detallesCompra(item){
-                console.log(item);
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`movimiento/compraById/${item._id}`,header)
                     .then(response=>{
-                        console.log(response);
                         let comprabd = response.data.compra;
                         this.limpiarDatosCompra(comprabd,item);
                     })
                     .catch((error)=>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },
@@ -291,27 +285,21 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`movimiento/compra?fechaInicial=${this.fechaInicio}&fechaFinal=${this.fechaFinal}`,header)
                     .then(response=>{
-                        console.log(response);
                         let saliadasBD = response.data.compra;
                         this.limpiarFechas(saliadasBD);
                     })
                     .catch((error) =>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },//traerCompras
 
             limpiarFechas(compras){
-
                 let arrayTemporal = [];
                 if(compras.length>0){
                     compras.map(function(x){
@@ -363,29 +351,22 @@
                 const filename = 'compras'
                 XLSX.utils.book_append_sheet(workbook, data, filename)
                 XLSX.writeFile(workbook, `${filename}.xlsx`)
-
             },//traerCompras
 
             borrar(item){
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`movimiento/eliminarCompraById/${item._id}`,header)
                     .then(response=>{
-                        console.log(response);
-                        let mensaje = response.data.compra;
-                        this.msjExito(mensaje);
+                        this.msjExito(response.data.compra);
                         this.compras=[]
                     })
                     .catch((error) =>{
-                        console.log(error);
                         if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             }//borrar

@@ -124,11 +124,13 @@
             this.traerSeparados();
         },
         methods:{
+
             checkToken(){
                 if(!this.$store.state.token && this.$router.currentRoute.name!=="/"){
                     this.$router.push('/');
                 }
             },
+
             //msg de alerta
             msjError:function(tata){
                 Swal.fire({
@@ -139,6 +141,7 @@
                     backdrop: 'rgba(55,55,55,0.8)',
                     timer: 3000})
             },
+
             msjExito:function(tata){
                 Swal.fire({
                     position: 'top',
@@ -153,62 +156,48 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get("articulo/separados",header)
                     .then(response =>{
-                        console.log(response.data);
                         this.articulos = response.data.articulo;
                         if(this.articulos.length==0){
                             this.msjExito("No hay articulos")
                         }
-
                     })
                     .catch((error) =>{
-                        console.log(error.response);
                         if(!error.response.data.msg){
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     })
             },//traerSeparados
 
             editar(item){
-                console.log(item);
                 this.id= item._id;
                 this.editedItem.cantSeparadas=item.cantSeparadas;
                 this.dialog=true;
             },//editar
 
-            
-
             //actualizar unidades separadas
             actualizarAlmacenadas(cantSeparadas){
-                console.log(cantSeparadas);
-                console.log(this.id);
                 let id=this.id;
                 let me = this
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.put(`articulo/actualizarCantSeparadas/${id}`,{cantSeparadas}, header)
-                .then((response)=>{
-                    console.log(response);
-                    this.msgError=response.data.msg;
-                    this.msjExito(this.msgError);
-                    me.traerSeparados();
-                    me.dialog=false;
-                })
-                .catch((error)=>{
-                    console.log(error);
-                    if(!error.response.data.msg){
-                    console.log(error.response);
-                    this.msgError = error.response.data.errors[0].msg;
-                    this.msjError(this.msgError);
-                    }else{
-                    this.msgError = error.response.data.msg;
-                    console.log(error.response.data.msg);
-                    this.msgError =error.response.data.msg;
-                    this.msjError(this.msgError);
-                    }
-                });
+                    .then((response)=>{
+                        this.msjExito(response.data.msg);
+                        me.traerSeparados();
+                        me.dialog=false;
+                    })
+                    .catch((error)=>{
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
+                    });
             },//actualizarAlmacenadas
 
 
@@ -221,16 +210,16 @@
                 }
 
                 me.articulos.map(function(x){
-                articulosExport.push(
-                    {
-                    categoria:x.categoria.nombre, 
-                    marca:x.marca.nombre, 
-                    referencia:x.referencia,  
-                    costo:x.costo,
-                    precio:x.precio,
-                    cantSeparadas:x.cantSeparadas
-                    }
-                );
+                    articulosExport.push(
+                        {
+                        categoria:x.categoria.nombre, 
+                        marca:x.marca.nombre, 
+                        referencia:x.referencia,  
+                        costo:x.costo,
+                        precio:x.precio,
+                        cantSeparadas:x.cantSeparadas
+                        }
+                    );
                 })
 
                 let data = XLSX.utils.json_to_sheet(articulosExport)

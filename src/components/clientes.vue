@@ -2,7 +2,6 @@
     <div>
         <v-app>
             <v-container fluid>
-
                 <template>
                     <v-row>
                         <div style="color: #72128E;  font-size:32px;  text-align:center; margin-top:50px;margin-left:30px">
@@ -10,8 +9,7 @@
                         </div>
                         <v-spacer></v-spacer>
                         <v-btn  
-                            depressed
-                            dark
+                            depressed dark
                             class="mb-2 purple darken-3 white--text"  
                             style="margin-right:30px; margin-left:20px;  margin-top:50px"
                             @click="inportarExcel()"
@@ -19,8 +17,7 @@
                             <v-icon size="25">mdi-cloud-upload</v-icon> &nbsp; Importar
                         </v-btn>
                         <v-btn  
-                            depressed 
-                            dark  
+                            depressed dark  
                             class="mb-2 purple darken-3 white--text"  
                             style="margin-right:30px; margin-left:20px;  margin-top:50px"   
                             @click="exportExcel()"
@@ -28,7 +25,13 @@
                             <v-icon size="25">mdi-file-excel-outline</v-icon>Exportar
                         </v-btn>
                         <div style="margin-top:50px;margin-right:30px">
-                            <v-btn  depressed dark  class="mb-2 purple darken-3 white--text"  @click="reset()"  > <v-icon size="20">mdi-plus</v-icon> Nuevo </v-btn>
+                            <v-btn  
+                                depressed dark  
+                                class="mb-2 purple darken-3 white--text"  
+                                @click="reset()"  
+                                > 
+                                    <v-icon size="20">mdi-plus</v-icon> Nuevo 
+                            </v-btn>
                         </div>
                     </v-row>
 
@@ -125,7 +128,6 @@
                         </v-card>
                     </v-dialog>
 
-
                     <v-dialog v-model="dialog3" max-width="500px" >
                         <v-card >
                             <v-card-title><span class="text-h5">Excel con clientes</span></v-card-title>
@@ -157,7 +159,6 @@
                             </v-card-text>    
                         </v-card>
                     </v-dialog>
-
                 </template>
 
             </v-container>
@@ -223,7 +224,8 @@
                     this.$router.push('/');
                 }
             },
-            //msg alerta
+
+            //msg de error
             msjError:function(tata){
                 Swal.fire({
                 position: 'top',
@@ -234,6 +236,8 @@
                 //5000 son 5 seg
                 timer: 3000})
             },
+
+            //msg de exito
             msjExisto:function(tata){
                 Swal.fire({
                 position: 'top',
@@ -243,30 +247,19 @@
                 backdrop: 'rgba(55,55,55,0.8)',
                 timer: 2000})
             },
-            
-            //traer proveedores
-            obtenerPersonas(){
-                let caracteresClientes = this.buscarClienteLetras.trim();
-                let header = {headers:{"token" : this.$store.state.token}};
-                axios.get(`cliente/clientes?value=${caracteresClientes}`,header)
-                    .then(response =>{
-                        console.log(response.data);
-                        this.personas = response.data.persona
-                        if(this.personas.length==0){
-                        this.msjExisto('No hay clientes');
-                        }
-                    })
-                    .catch((error) =>{
-                        console.log(error.response);
-                        if(!error.response.data.msg){
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                        }else{
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                        }
-                    })
-            },//obtenerPersonas
+
+            //msg de espera
+            msjProceso:function(){
+                Swal.fire({
+                    title:"Registrando compra",
+                    html:"Procesando...",
+                    allowOutsideClick:false,
+                    showConfirmButton:false,
+                    willOpen:()=>{
+                        Swal.showLoading()
+                    }
+                })
+            },
 
             //limpiar formulario
             reset(){
@@ -279,10 +272,9 @@
                 this.editedItem.telefono=''
                 this.editedItem.email=''
             },//reset
-            
+
             //alistar variables para enviar 
             editar(item){
-                console.log(item);
                 this.id= item._id;
                 this.editedItem.tipoDocumento=item.tipoDocumento
                 this.editedItem._id=item._id
@@ -293,7 +285,29 @@
                 this.editedItem.email=item.email
                 this.dialog2=true;
             },//editar
-      
+
+            //traer proveedores
+            obtenerPersonas(){
+                let caracteresClientes = this.buscarClienteLetras.trim();
+                let header = {headers:{"token" : this.$store.state.token}};
+                axios.get(`cliente/clientes?value=${caracteresClientes}`,header)
+                    .then(response =>{
+                        this.personas = response.data.persona
+                        if(this.personas.length==0){
+                            this.msjExisto('No hay clientes');
+                        }
+                    })
+                    .catch((error) =>{
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
+                    })
+            },//obtenerPersonas
+
             //almacenar
             guardar(){
                 let header = {headers:{"token" : this.$store.state.token}};
@@ -304,36 +318,29 @@
                 }else if(this.editedItem.tipoDocumento.length>70 || this.editedItem._id.length>30 || this.editedItem.nombre.length>70 ||
                         this.editedItem.direccion.length>70 || this.editedItem.ciudad.length>70 || this.editedItem.telefono.length>70 || 
                         this.editedItem.email.length>70 ){
+                    
                     this.msjError('Supero el número de carácteres permintidos en un campo');
-
                 }else{
                     axios.post('cliente',{
-                        tipoDocumento:this.editedItem.tipoDocumento,
-                        _id:this.editedItem._id,
-                        nombre:this.editedItem.nombre,
-                        direccion:this.editedItem.direccion,
-                        ciudad:this.editedItem.ciudad,
-                        telefono:this.editedItem.telefono,
-                        email:this.editedItem.email,
-                        },
-                        header)
+                                            tipoDocumento:this.editedItem.tipoDocumento,
+                                            _id:this.editedItem._id,
+                                            nombre:this.editedItem.nombre,
+                                            direccion:this.editedItem.direccion,
+                                            ciudad:this.editedItem.ciudad,
+                                            telefono:this.editedItem.telefono,
+                                            email:this.editedItem.email,
+                                        },header)
                         .then((response)=>{
-                            console.log(response);
                             this.dialog=false
-                            this.msgError = response.data.msg;
-                            me.msjExisto(this.msgError);
+                            me.msjExisto(response.data.msg);
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                            console.log(error.response);
-                            this.msgError = error.response.data.errors[0].msg;
-                            this.msjError(this.msgError);
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                            this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
-                            this.msgError =error.response.data.msg;
-                            this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         })         
                 }  
@@ -342,30 +349,22 @@
             //eliminar cliente de la bd
             eliminar(item){
                 let id = item._id
-                console.log(id);
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.delete(`cliente/${id}`, header)
                     .then((response)=>{
-                    console.log(response);
-                    this.msgError=response.data.msg;
-                    this.msjExisto(this.msgError);
-                    this.personas=[];
+                        this.msjExisto(response.data.msg);
+                        this.personas=[];
                     })
                     .catch((error)=>{
-                    console.log(error);
                     if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                        let msgErrores = error.response.data.errors[0].msg;
+                        this.msjError(msgErrores);
                     }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                        let msgErrores =error.response.data.msg;
+                        this.msjError(msgErrores);
                     }
                     });
             },//eliminar
-
 
             actualizarTipodoc(tipoDocumento){
                 let id=this.id;
@@ -375,21 +374,15 @@
                 }else{
                 axios.put(`cliente/actualizarTipoDoc/${id}`,{tipoDocumento}, header)
                     .then((response)=>{
-                    console.log(response);
-                    this.msgError=response.data.msg;
-                    this.msjExisto(this.msgError);
+                        this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
-                    console.log(error);
                     if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
+                        let msgErrores = error.response.data.errors[0].msg;
+                        this.msjError(msgErrores);
                     }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
+                        let msgErrores =error.response.data.msg;
+                        this.msjError(msgErrores);
                     }
                     });
                 }
@@ -400,29 +393,23 @@
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 if(nombre.trim()===''){
-                this.msjError('Nombre obligatorio');
+                    this.msjError('Nombre obligatorio');
                 }else if(nombre.length>70){
-                this.msjError('Nombre demasiado largo');
+                    this.msjError('Nombre demasiado largo');
                 }else{
-                axios.put(`cliente/actualizarNombre/${id}`,{nombre}, header)
-                    .then((response)=>{
-                    console.log(response);
-                    this.msgError=response.data.msg;
-                    this.msjExisto(this.msgError);
-                    })
-                    .catch((error)=>{
-                    console.log(error);
-                    if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                    }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                    }
-                    });
+                    axios.put(`cliente/actualizarNombre/${id}`,{nombre}, header)
+                        .then((response)=>{
+                            this.msjExisto(response.data.msg);
+                        })
+                        .catch((error)=>{
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
+                        });
                 }
                 
             },//actualizarNombre
@@ -431,29 +418,23 @@
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 if(direccion.trim()===''){
-                this.msjError('Dirección obligatorio');
+                    this.msjError('Dirección obligatorio');
                 }else if(direccion.length>70){
-                this.msjError('Dirección demasiada larga');
+                    this.msjError('Dirección demasiada larga');
                 }else{
-                axios.put(`cliente/actualizarDireccion/${id}`,{direccion}, header)
-                    .then((response)=>{
-                    console.log(response);
-                    this.msgError=response.data.msg;
-                    this.msjExisto(this.msgError);
-                    })
-                    .catch((error)=>{
-                    console.log(error);
-                    if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                    }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                    }
-                    });
+                    axios.put(`cliente/actualizarDireccion/${id}`,{direccion}, header)
+                        .then((response)=>{
+                            this.msjExisto(response.data.msg);
+                            })
+                        .catch((error)=>{
+                            if(!error.response.data.msg){
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
+                            }else{
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
+                            }
+                        });
                 }
                 
             },//actualizarDireccion
@@ -462,29 +443,23 @@
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 if(ciudad.trim()===''){
-                this.msjError('Ciudad obligatorio');
+                    this.msjError('Ciudad obligatorio');
                 }else if(ciudad.length>70){
-                this.msjError('Ciudad demasiada larga');
+                    this.msjError('Ciudad demasiada larga');
                 }else{
-                axios.put(`cliente/actualizarCiudad/${id}`,{ciudad}, header)
-                    .then((response)=>{
-                    console.log(response);
-                    this.msgError=response.data.msg;
-                    this.msjExisto(this.msgError);
-                    })
-                    .catch((error)=>{
-                    console.log(error);
-                    if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                    }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                    }
-                    });
+                    axios.put(`cliente/actualizarCiudad/${id}`,{ciudad}, header)
+                        .then((response)=>{
+                        this.msjExisto(response.data.msg);
+                        })
+                        .catch((error)=>{
+                            if(!error.response.data.msg){
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
+                            }else{
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
+                            }
+                        });
                 }
                 
             },//actualizarCiudad
@@ -493,29 +468,23 @@
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 if(telefono.trim()===''){
-                this.msjError('Telefono obligatorio');
+                    this.msjError('Telefono obligatorio');
                 }else if(telefono.length>70){
-                this.msjError('Telefono demasiada larga');
+                    this.msjError('Telefono demasiada larga');
                 }else{
-                axios.put(`cliente/actualizarTelefono/${id}`,{telefono}, header)
-                    .then((response)=>{
-                    console.log(response);
-                    this.msgError=response.data.msg;
-                    this.msjExisto(this.msgError);
-                    })
-                    .catch((error)=>{
-                    console.log(error);
-                    if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                    }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                    }
-                    });
+                    axios.put(`cliente/actualizarTelefono/${id}`,{telefono}, header)
+                        .then((response)=>{
+                            this.msjExisto(response.data.msg);
+                        })
+                        .catch((error)=>{
+                            if(!error.response.data.msg){
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
+                            }else{
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
+                            }
+                        });
                 }
             },//actualizarTelefono
             
@@ -523,35 +492,32 @@
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 if(email.trim()===''){
-                this.msjError('Email obligatorio');
+                    this.msjError('Email obligatorio');
                 }else if(email.length>70){
-                this.msjError('Email demasiada larga');
+                    this.msjError('Email demasiada larga');
                 }else{
-                axios.put(`cliente/actualizarEmail/${id}`,{email}, header)
-                    .then((response)=>{
-                    console.log(response);
-                    this.msgError=response.data.msg;
-                    this.msjExisto(this.msgError);
-                    })
-                    .catch((error)=>{
-                    console.log(error);
-                    if(!error.response.data.msg){
-                        console.log(error.response);
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjError(this.msgError);
-                    }else{
-                        this.msgError = error.response.data.msg;
-                        console.log(error.response.data.msg);
-                        this.msgError =error.response.data.msg;
-                        this.msjError(this.msgError);
-                    }
-                    });
+                    axios.put(`cliente/actualizarEmail/${id}`,{email}, header)
+                        .then((response)=>{
+                            this.msjExisto(response.data.msg);
+                        })
+                        .catch((error)=>{
+                            if(!error.response.data.msg){
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
+                            }else{
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
+                            }
+                        });
                 }
             },//actualizarDireccion
 
             exportExcel(){
                 let me = this
                 let clientesExport=[]
+                if(me.personas.length>1000){
+                    return this.msjError("Max. 1000 datos");
+                }
                 me.personas.map(function(x){
                 clientesExport.push(
                     {
@@ -577,9 +543,7 @@
             },
 
             onChangess(file) {
-                console.log(file);
                 this.file = file ? file : null;
-                console.log(this.file);
                 if (this.file) {
                     const reader = new FileReader();
                     reader.onload = (e) => {
@@ -590,45 +554,40 @@
                         const wsname = wb.SheetNames[0];
                         const ws = wb.Sheets[wsname];
                         this.dataExcel = XLSX.utils.sheet_to_json(ws);
-                        console.log(this.dataExcel);
                     }
                     reader.readAsBinaryString(this.file);
                 }
             },//onChangess
 
             enviarDataExcel(){
-                this.msjExito("Enviando")
+                this.msjProceso();
+
                 if(this.dataExcel.length==0){
                     this.msjError("Excel sin datos")
                 }else if(this.dataExcel.length>250){
                     this. msjError("Demasiados articulos, max 250")
                 }else{
                     let header = {headers:{"token":this.$store.state.token}};
-                    axios.post("/cliente/subirClientes",{
-                            articulos:this.dataExcel,
-                        },header)
+                    axios.post("cliente/subirClientes",{clientes:this.dataExcel},header)
                         .then(response=>{
-                            console.log(response);
-                            //let mensaje = response.data.msg;
                             this.file=null;
                             this.dataExcel=[];
-                            this.onChangess(null)
-                            this.msjExito("venta realizada")
+                            Swal.close();
+                            this.msjExisto(response.data.msg)
+                            this.dialog3=false;
                         })
                         .catch(error=>{
                             console.log(error.response);
-                                if(!error.response.data.msg){
-                                this.msgError = error.response.data.errors[0].msg;
-                                this.msjError(this.msgError);
+                            if(!error.response.data.msg){
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
                             }else{
-                                this.msgError =error.response.data.msg;
-                                this.msjError(this.msgError);
+                                let msgErrores =error.response.data.msg;
+                                this.msjError(msgErrores);
                             }
                         })
                     }
             }//enviarDataExcel
-
-
         },//methots
     }//export default
 </script>
