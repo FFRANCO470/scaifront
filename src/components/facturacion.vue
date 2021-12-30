@@ -37,7 +37,7 @@
                 <!--COMENTARIO-->
                 <v-col>
                     <div class="form-group row comentario">
-                        <v-textarea v-model="comentario"  color="#72128E"   outlined  :counter=250 label="Descripcion"></v-textarea>
+                        <v-textarea v-model="comentario"  color="#72128E"   outlined  :counter=250 label="Observaciones"></v-textarea>
                     </div>
                 </v-col>
             </v-row>
@@ -396,6 +396,8 @@
                 { text: 'Cantidad', value: 'cantidad',class:'grey darken-4 white--text' },
                 {text:'Eliminar',value:'actions',class:'grey darken-4 white--text',sortable: false}
             ],
+
+            
         }),//data
         
         created(){
@@ -404,12 +406,14 @@
             this.traerArticulosActivos();
         },
         methods:{
+
             //validar que la ruta tenga token si no redireccionar a login
             checkToken(){
                 if(!this.$store.state.token && this.$router.currentRoute.name!=="/"){
                     this.$router.push('/');
                 }
             },
+
             //msg de alerta erronea
             msjErrores : function(msg){
                 Swal.fire({
@@ -433,13 +437,13 @@
                     timer:1000
                 })
             },//msjExitoso
+
             //buscar y traer el cliente
             traerCliente(){
                 if(this.cliente._id.trim()===''){return this.msjErrores('Numero de documento obligatorio')}
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`cliente/buscando?numDocumento=${this.cliente._id}`,header,)
                     .then(response=>{
-                         console.log(response);
                         if(response.data.persona==false){
                             this.agregarCliente();
                         }else{
@@ -448,16 +452,16 @@
                         }
                     })
                     .catch(error=>{
-                        console.log(error.response);
                         if(!error.response.data.msg){
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjErrores(this.msgError);
+                            this.msgError = error.response.data.errors[0].msg;
+                            this.msjErrores(this.msgError);
                         }else{
-                        this.msgError =error.response.data.msg;
-                        this.msjErrores(this.msgError);
+                            this.msgError =error.response.data.msg;
+                            this.msjErrores(this.msgError);
                         }
                     })
             },//traerCliente
+
             //preguntar si desea agregar cliente 
             agregarCliente:function(){
                 Swal.fire({
@@ -477,25 +481,25 @@
                     }
                 })
             },//agregarCliente
+
             //traer numero de factura
             traerNumFactura(){
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get('generalData/venta',header,)
                     .then(response=>{
-                        console.log(response);
                         this.numFactura=response.data.numFactura;
                     })
                     .catch(error=>{
-                        console.log(error.response);
                         if(!error.response.data.msg){
-                        this.msgError = error.response.data.errors[0].msg;
-                        this.msjErrores(this.msgError);
+                            this.msgError = error.response.data.errors[0].msg;
+                            this.msjErrores(this.msgError);
                         }else{
-                        this.msgError =error.response.data.msg;
-                        this.msjErrores(this.msgError);
+                            this.msgError =error.response.data.msg;
+                            this.msjErrores(this.msgError);
                         }
                     })
             },//traerNumFactura
+
             //traer articulos activos
             traerArticulosActivos(){
                 let header = {headers:{"token" : this.$store.state.token}};
@@ -518,6 +522,7 @@
                         }
                     })
             },//trearArticulosActivos
+
             //alistar los articulos para mostrar en la venta
             meterArticulos(articulosTraidos){
                 let pepe=[];
@@ -535,14 +540,16 @@
                     })
                 })
                 this.articulosMostradosVenta=pepe;
-                console.log(this.articulosMostradosVenta);
+                
             },//meterArticulos
+
             //meter el articulo en la venta
             facturar(item){
                 this.editedIndex=this.articulosMostradosVenta.indexOf(item);
                 this.facturaArticulos.push(item);
                 this.articulosMostradosVenta.splice(this.editedIndex,1);
             },//facturar
+
             //quita el articulo de la venta
             desfacturar(item){
                 this.editedIndex=this.facturaArticulos.indexOf(item)
@@ -550,6 +557,7 @@
                 this.facturaArticulos.splice(this.editedIndex,1)
             },//desfacturar
             //crear la factura
+
             crearFactura(){
                 
                 //validar tipo factura
@@ -571,6 +579,7 @@
                     }
                     
                 }
+
                 //validar factura debito
                 if(this.tipoFactura=='debito'){
                     if(this.saldoAnterior==0 ||  this.saldoAnterior==''){
@@ -581,6 +590,7 @@
                         return this.msjErrores('Completar almenos efectivo o nequi o tarjeta')
                     }
                 }
+
                 //validar factura abono sobre abono
                 if(this.tipoFactura=='abonoAbono'){
                     if(this.saldoAnterior==0 ||  this.saldoAnterior==''){
@@ -605,6 +615,12 @@
                     if(this.cliente._id===''){return this.msjErrores('Numero de documento obligatorio')}
                     if(this.cliente.nombre===''){return this.msjErrores('Nombre obligatorio')}
                 }
+
+                console.log("enviar");
+                console.log(this.facturaArticulos);
+                console.log("enviar");
+
+
                 let me = this                
                 let header = {headers:{"token":this.$store.state.token}};
                 axios.post('venta',
@@ -632,8 +648,8 @@
                             console.log(response);
                             this.msjExitoso('estoy facturando')
                             this.traerNumFactura();
-                            this.traerArticulosActivos();
-                            me.limpiarTodo();
+                            me.traerArticulosActivos();
+                            //me.limpiarTodo();
 
                            me.crearPDF();
                             //eventBus.$emit("pasar","la escalandia")
@@ -654,6 +670,7 @@
                         })
                 
             },//crearFactura
+
             limpiarTodo(){
                 this.cliente={};
                 this.existeCliente = false;
@@ -675,105 +692,198 @@
                 //http://raw.githack.com/MrRio/jsPDF/master/docs/module-viewerpreferences.html
                
                 //http://raw.githack.com/MrRio/jsPDF/master/
-               var sise = 10
-
-                var doc = new jsPDF();
+               
+                var sise = 10
                 
-                doc.beginFormObject(0, 0, 250, 600)
+                //cliente
+                let documento = this.cliente._id.slice(0,13); //17
+                let tipoDocumento = this.cliente.tipoDocumento.slice(0,9); //17
+                let nombre = this.cliente.nombre.slice(0,16); //17
+                let telefono = this.cliente.telefono.slice(0,14); //16
+                let direccion = this.cliente.direccion.slice(0,14); //17
+                let ciudad = this.cliente.ciudad.slice(0,17); //19
 
-                doc.roundedRect(1, 1, 86, 169, 0, 0)
-                doc.setFont(undefined, 'bold');
-
-                doc.setFontSize(16);
-                doc.text("THE SCALA",30,9,{charSpace:0.4});
-
-                doc.setFontSize(sise);
-                doc.text("GINA PAOLA CEPEDA VERGARA", 14, 14,{charSpace:0.4});
-
-                doc.setFontSize(sise);
-                doc.text("NIT: 52515303-7            Reg Simplificado", 2, 20,{charSpace:0.3});
-
-                doc.text("C.C EL PUENTE L.154   San Gil(Santander)", 2, 26,{charSpace:0.3});
-
-                doc.text("Cel.:311 893 8204         Tel.:724 1748", 2, 32,{charSpace:0.3});
-
-                doc.text("Nombre: ", 2,38,{charSpace:0.3});
-
-                doc.text("Telefono: ", 2,44,{charSpace:0.3});
-
-                doc.text("Dirección: ", 2,50,{charSpace:0.3});
-
-                doc.text("Ciudad: ", 2,56,{charSpace:0.3});
-
-                doc.text("Cedula: ", 2,62,{charSpace:0.3});
-
-                doc.line(1,68,87,68)
-
-                doc.text("Factura Venta  3338    22-nov-21   6:6 pm", 3,74,{charSpace:0.3});
-
-                var datos = [
-                    {refer: "c2121",cant: "1",desc: "camisa blanca",unidad: "200000",total:"1000000"},
-                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
-                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
-                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
-                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
-                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
-                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},
-                    {refer: "c2121",cant: "2",desc: "desc2",unidad: "200000",total:"500000"},   
-                    {refer: " ",cant: " ",desc: " ",unidad: "Total",total:"17000000"}
+                //fecha
+                const d = new Date();
+                let dia = d.getDate()
+                const monthNames = ["ene", "feb", "mar", "abr", "may", "jun",
+                    "jul", "ago", "sep", "oct", "nov", "dic"
                 ];
+                let mes = monthNames[d.getMonth()]
+                let ano = d.getFullYear();
+                let hora = d.getHours();
+                let min = d.getMinutes();
+
+                let correr = 84;
+                var datos = [];
+
+                if(this.tipoFactura=="debito"){
+
+                    let totalDebito = parseInt(this.efectivo) + parseInt(this.nequi) + parseInt(this.tarjeta);
+                    datos = [
+                        {referencia: " ",cantidad: "1",categoria: "Debito",precio: " ",total:totalDebito.toString()},
+                        {referencia: " ",cantidad: " ",categoria: " ",precio: " ",total:" "},
+                        {referencia: " ",cantidad: " ",categoria: " ",precio: " ",total:" "},
+                        {referencia: " ",cantidad: " ",categoria: " ",precio: " ",total:4},
+                        {referencia: " ",cantidad: " ",categoria: " ",precio: "Total",total:totalDebito.toString()}
+                    ];
+                    correr = 120;
+                }else if(this.tipoFactura=="abonoAbono"){
+
+                    let articulospdf = this.facturaArticulos
+                    console.log(articulospdf);
+                    if(articulospdf.length != 0){
+                        articulospdf.map(function(x){
+                            datos.push({
+                                referencia:x.referencia,
+                                categoria:x.categoriaName,
+                                cantidad:x.cantidad.toString(),
+                                precio:" ",
+                                total: " "
+                            })
+                        })
+                    }else{
+                        datos.push(
+                            {referencia: " ",cantidad: " ",categoria: " ",precio: " ",total:" "},
+                            {referencia: " ",cantidad: " ",categoria: " ",precio: " ",total:" "},
+                            {referencia: " ",cantidad: " ",categoria: " ",precio: " ",total:" "}
+                        )
+                    }
+                    let total = this.saldoAnterior.toString();
+                    let abono = parseInt(this.efectivo) + parseInt(this.nequi) + parseInt(this.tarjeta) + parseInt(this.credito)
+                    let saldo = parseInt(total) - (parseInt(this.efectivo) + parseInt(this.nequi) + parseInt(this.tarjeta) + parseInt(this.credito))
+                    datos.push(
+                        {referencia: "",cantidad: "",categoria: "",precio: "saldo A.",total:total},
+                        {referencia: "",cantidad: "",categoria: "",precio: "abono ",total:abono.toString()},
+                        {referencia: "",cantidad: "",categoria: 0,precio: "saldo ",total:saldo.toString()}
+                    )
+                    correr = correr + 40
+                    let tamano = datos.length;
+                    correr = correr + ((tamano-5) * 8);
+
+                }else{
+
+                    this.facturaArticulos.map(function(x){
+                        datos.push({
+                            referencia:x.referencia,
+                            categoria:x.categoriaName,
+                            cantidad:x.cantidad.toString(),
+                            precio:x.precio.toString(),
+                            total: (x.cantidad * x.precio).toString()
+                        })
+                    })
+
+                    let total = (this.totalVendido-this.descuento).toString();
+
+                    if(this.subTipoFactura=="venta"){
+                        datos.push(
+                            {referencia: "",cantidad: "",categoria: "",precio: "subtotal",total:this.totalVendido.toString()},
+                            {referencia: "",cantidad: "",categoria: "",precio: "desc.",total:this.descuento.toString()},
+                            {referencia: "",cantidad: "",categoria: 0,precio: "total ",total:total}
+                        )
+                        correr = correr + 30;
+                        let tamano = datos.length;
+                        correr = correr + ((tamano-3) * 8);
+
+                    }else{
+                        let abono = parseInt(this.efectivo) + parseInt(this.nequi) + parseInt(this.tarjeta) + parseInt(this.credito)
+                        let saldo = parseInt(total) - (parseInt(this.efectivo) + parseInt(this.nequi) + parseInt(this.tarjeta) + parseInt(this.credito))
+                        datos.push(
+                            {referencia: "",cantidad: "",categoria: "",precio: "subtotal",total:this.totalVendido.toString()},
+                            {referencia: "",cantidad: "",categoria: "",precio: "desc.",total:this.descuento.toString()},
+                            {referencia: "",cantidad: "",categoria: "",precio: "total ",total:total},
+                            {referencia: "",cantidad: "",categoria: "",precio: "abono ",total:abono.toString()},
+                            {referencia: "",cantidad: "",categoria: 0,precio: "saldo ",total:saldo.toString()}
+                        )
+                        correr = correr + 40
+                        let tamano = datos.length;
+                        correr = correr + ((tamano-5) * 8);
+                    }
+                }
+
+                let vendedor = this.$store.state.nombreUser.slice(0,13)
+                let observacion = this.comentario.slice(0,251);
+
+                let cortar = (correr + 61) * 2.9;
+                
+                var doc = new jsPDF();
+
+                doc.beginFormObject(0, 0, 200, cortar)
+                
+                doc.setFont('helvetica', 'italic');
+                doc.text("The Scala",20,8,{charSpace:0.4,maxWidth:97});
+                
+                doc.setFontSize(18);
+                doc.setFont("helvetica","bold");
+
+                doc.setFontSize(sise);
+                doc.text("GINA PAOLA CEPEDA VERGARA", 4, 15,{charSpace:0.2});
+
+                doc.setFontSize(sise);
+                doc.text("NIT: 52515303-7",       4, 20,{charSpace:0.2});
+                doc.text("REGIMEN SIMPLIFICADO", 4,  25,{charSpace:0.2});
+                doc.text("C.C EL PUENTE L.154",  4, 30,{charSpace:0.2});
+                doc.text("SAN GIL(SDER)",   4, 35,{charSpace:0.2});
+                doc.text("CELULAR : 311 893 8204",    4, 40,{charSpace:0.2});
+                doc.text("TELEFONO: 607 724 1748",        4, 45,{charSpace:0.2});
+                
+                doc.text(`NOMBRE: ${nombre}`,   4, 55 ,{charSpace:0.3});
+                doc.text(`TIPO DOCUMENTO: ${tipoDocumento}`,   4, 60 ,{charSpace:0.3});
+                doc.text(`DOCUMENTO: ${documento}`,   4, 65 ,{charSpace:0.3});
+                doc.text(`TELEFONO: ${telefono}`, 4, 70 ,{charSpace:0.3});
+                doc.text(`DIRECCION: ${direccion}`,4, 75 ,{charSpace:0.3});
+                doc.text(`CIUDAD: ${ciudad}`,   4, 80 ,{charSpace:0.3});
+
+                doc.line(1,81,68,81)
+                doc.text(`Factura Venta  ${this.numFactura}`, 4,85,{charSpace:0.3});
+                
+                doc.text(`${dia}-${mes}-${ano}    ${hora}:${min}   `,  4,90,{charSpace:0.3});
 
                 var cabeza = [
-                    {align:"center",width:21,id:"refer",name:"refer",prompt:"Refer"},
-                    {align:"center",width:17,id:"cant",name:"cant",prompt:"Cant"},
-                    {align:"center",width:27,id:"desc",name:"desc",prompt:"Desc"},
-                    {align:"center",width:24,id:"unidad",name:"unidad",prompt:"Vr Unit"},
-                    {align:"center",width:25.3,id:"total",name:"total",prompt:"Vr total"}
+                    {align:"center",width:22,id:"referencia",name:"referencia",prompt:"Refer"},
+                    {align:"center",width:18,id:"categoria",name:"categoria",prompt:"Desc."},
+                    {align:"center",width:13,id:"cantidad",name:"cantidad",prompt:"Cant"},
+                    {align:"center",width:18,id:"precio",name:"precio",prompt:"Vr Unit"},
+                    {align:"center",width:19.5,id:"total",name:"total",prompt:"Vr total"}
+                ];
+                
+                
+                doc.table(0, 95, datos, cabeza,{fontName:"Arial",fontSize:"9",autoSize: false,headerBackgroundColor:"#FFFFFF",padding:0.3,});
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(sise);
+                
+                doc.text(`Vendedor: ${vendedor}`, 15,correr + 5,{charSpace:0.2});
+
+                doc.text("Metodo de pago", 20,correr + 10,{charSpace:0.3});
+
+                var datos2 = []
+                if(this.tipoFactura=="debito"){
+                    datos2 = [{efectivo: this.efectivo.toString(), tarjeta: this.tarjeta.toString(), nequi:this.nequi.toString(), credito: "0"}];
+
+                }else{
+                    datos2 = [{efectivo: this.efectivo.toString(), tarjeta: this.tarjeta.toString(), nequi:this.nequi.toString(), credito: this.credito.toString()}];
+                }
+                var cabeza2 = [
+                    {align:"center",width:22,id:"efectivo",name:"efectivo",prompt:"Efectivo"},
+                    {align:"center",width:22,id:"tarjeta",name:"tarjeta",prompt:"Tarjeta"},
+                    {align:"center",width:22,id:"nequi",name:"nequi",prompt:"Nequi"},
+                    {align:"center",width:25,id:"credito",name:"credito",prompt:"Sistecredito"}
+                    
                 ];
 
-                doc.table(1, 80, datos, cabeza,{fontSize:"9",autoSize: false,headerBackgroundColor:"#FFFFFF",padding:0.5});
+                doc.table(0, correr + 15, datos2, cabeza2,{fontName:"Arial",fontSize:"9",autoSize: false,headerBackgroundColor:"#FFFFFF",padding:0.3,});
 
-                doc.setFont(undefined, 'bold');
-                doc.setFontSize(sise);
-                doc.text("Vendedor     Ricardo", 25,135,{charSpace:0.3});
 
-                doc.text("Metodo de pago", 30,140,{charSpace:0.3});
+                doc.text("Observaciones", 28,correr + 30,{charSpace:0.3});
+                doc.text(`${observacion}`, 4,correr + 35,{maxWidth:"52",charSpace:0.3});
 
-                doc.rect(1, 143, 20, 10);
-                doc.rect(21, 143, 23, 10);
-                doc.rect(44, 143, 21.5, 10);
-                doc.rect(65.5, 143, 21.5, 10);
-
-                doc.text("Efectivo", 2,147,{charSpace:0.1});
-                doc.text("Sistecredito", 22,147,{charSpace:0.1});
-                doc.text("Tarjeta", 46,147,{charSpace:0.1});
-                doc.text("Nequi", 68,147,{charSpace:0.1});
-
-                doc.text("100000", 2,152);
-                doc.text("200000", 24,152);
-                doc.text("5000000", 46,152);
-                doc.text("350000", 68,152);
-
-                doc.text("Observaciones", 28,158,{charSpace:0.3});
-                doc.text("Velen campanas de velen que los angeles canta que noche que esta bien", 2,162,{maxWidth:"70",charSpace:0.3});
-
-                // doc.autoPrint({variant: 'conform'});
-                // doc.save('autoprint.pdf');
-
+                
+                doc.roundedRect(0, 0, 68, correr + 60, 0, 0);
+                
                 doc.output('dataurlnewwindow');
-
-                // var string = doc.output('datauristring');
-
-                // var iframe = "<iframe width='100%' height='100%' src='" + string + "'></iframe>"
-
-                // var x = window.open();
-                // x.document.open();
-                // x.document.write(iframe);
-                // x.document.close();
+                this.limpiarTodo();
                 
-                
-
-
             }//crearPDF
             
         },//methods
