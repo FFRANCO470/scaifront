@@ -509,14 +509,11 @@
                         this.meterArticulos(this.articulosTraidos);
                     })
                     .catch((error) =>{
-                        console.log(error.response);
                         if(!error.response.data.msg){
-                            console.log(error.response);
                             this.msgError = error.response.data.errors[0].msg;
                             this.msjErrores(this.msgError);
                         }else{
                             this.msgError = error.response.data.msg;
-                            console.log(error.response.data.msg);
                             this.msgError =error.response.data.msg;
                             this.msjErrores(this.msgError);
                         }
@@ -616,9 +613,6 @@
                     if(this.cliente.nombre===''){return this.msjErrores('Nombre obligatorio')}
                 }
 
-                console.log("enviar");
-                console.log(this.facturaArticulos);
-                console.log("enviar");
 
 
                 let me = this                
@@ -645,8 +639,7 @@
                         articulos : this.facturaArticulos
                     },header)
                         .then((response)=>{
-                            console.log(response);
-                            this.msjExitoso('estoy facturando')
+                            this.msjExitoso(response.data.msg);
                             this.traerNumFactura();
                             me.traerArticulosActivos();
                             //me.limpiarTodo();
@@ -657,14 +650,11 @@
                             //this.$router.push('/aaaa');
                         })
                         .catch((error)=>{
-                            console.log(error.response);
                             if(!error.response.data.msg){
-                                console.log(error.response);
                                 this.msgError = error.response.data.errors[0].msg
                                 this.msjErrores(this.msgError);
                             }else{
                                 this.msgError = error.response.data.msg
-                                console.log(error.response.data.msg);
                                 this.msjErrores(this.msgError);
                             }
                         })
@@ -685,7 +675,6 @@
                 this.descuento=0;
                 this.facturaArticulos=[];
                 this.comentario="";
-                console.log("limiop");
             },//limpiarTodo
 
             crearPDF(){ 
@@ -731,7 +720,6 @@
                 }else if(this.tipoFactura=="abonoAbono"){
 
                     let articulospdf = this.facturaArticulos
-                    console.log(articulospdf);
                     if(articulospdf.length != 0){
                         articulospdf.map(function(x){
                             datos.push({
@@ -879,7 +867,7 @@
                 doc.text(`${observacion}`, 4,correr + 35,{maxWidth:"52",charSpace:0.3});
 
                 
-                doc.roundedRect(0, 0, 68, correr + 60, 0, 0);
+                doc.roundedRect(0, 0, 68, correr + 63, 0, 0);
                 
                 doc.output('dataurlnewwindow');
                 this.limpiarTodo();

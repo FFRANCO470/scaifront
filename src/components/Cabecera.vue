@@ -1,7 +1,7 @@
 <template >
     <div v-if="this.$store.state.token !=''">
-        <!--<v-navigation-drawer app permanent  color="#8732A0"  expand-on-hover style="opacity: 0.9;" class="oculto-impresion">-->
-        <v-navigation-drawer app permanent  color="#8732A0" style="opacity: 0.9;">
+        <v-navigation-drawer app permanent  color="#8732A0"  expand-on-hover style="opacity: 0.9;" class="oculto-impresion">
+        <!--<v-navigation-drawer app permanent  color="#8732A0" style="opacity: 0.9;">-->
             
             <v-list>
                 <v-list-item link>

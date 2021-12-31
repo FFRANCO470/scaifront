@@ -96,6 +96,10 @@
                         <v-row>
                             <v-col>
                                 <div class="form-group row texto">
+                                    <label  class="col-sm-5 col-form-label">No. Factura:</label>
+                                    <label  class="col-sm-5 col-form-label">{{debito.numFactura}}</label>
+                                </div>
+                                <div class="form-group row texto">
                                     <label  class="col-sm-5 col-form-label">Fecha:</label>
                                     <label  class="col-sm-5 col-form-label">{{debito.createdAt}}</label>
                                 </div>
@@ -260,8 +264,8 @@
                 if(diferencia<0){
                     return this.msjError("Fecha inicial mayor a fecha final");
                 }
-                if(diferencia>180){
-                    return this.msjError("Max. 180 dias");
+                if(diferencia>31){
+                    return this.msjError("Max. 31 dias");
                 }
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.get(`venta/debito?fechaInicial=${this.fechaInicio}&fechaFinal=${this.fechaFinal}`,header)
