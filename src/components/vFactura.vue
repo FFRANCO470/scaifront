@@ -287,7 +287,6 @@
 
                 axios.get(`venta/ventaByCriterio?buscar=${this.buscar}&buscarDato=${this.buscarDato}`,header,)
                     .then(response=>{
-                        console.log(response);
                         if(!response.data.venta){
                             return this.msjExito("No hay factura coincidente con los datos")
                         }
@@ -295,10 +294,8 @@
                             return this.msjExito("No hay factura coincidente con los datos")
                         }
                         this.limpiarDatosFactura(response.data.venta);
-                        // venta=response.data.venta
                     })
                     .catch(error=>{
-                        console.log(error.response);
                         if(!error.response.data.msg){
                             this.msgError = error.response.data.errors[0].msg;
                             this.msjErrores(this.msgError);
@@ -383,11 +380,9 @@
 
             traerCliente(cliente){
                 if(cliente!=""){
-
                     let header = {headers:{"token" : this.$store.state.token}};
                         axios.get(`cliente/buscando?numDocumento=${cliente}`,header,)
                             .then(response=>{
-                                console.log(response);
                                 if(response.data.persona!=false){
                                     this.cliente=response.data.persona;
                                 }else{
@@ -395,7 +390,6 @@
                                 }
                             })
                             .catch(error=>{
-                                console.log(error.response);
                                 if(!error.response.data.msg){
                                     this.msgError = error.response.data.errors[0].msg;
                                     this.msjErrores(this.msgError);
@@ -448,12 +442,11 @@
 
                     let articulospdf = this.articulosAbono
                     if(articulospdf.length != 0){
-                        console.log(articulospdf);
                         articulospdf.map(function(x){
                             datos.push({
                                 referencia:x.referencia,
                                 categoria:x.categoria,
-                                cantidad:x.cantidad,
+                                cantidad:x.cantidad.toString(),
                                 precio:" ",
                                 total: " "
                             })
@@ -562,7 +555,6 @@
                     {align:"center",width:18,id:"precio",name:"precio",prompt:"Vr Unit"},
                     {align:"center",width:19.5,id:"total",name:"total",prompt:"Vr total"}
                 ];
-                
                 
                 doc.table(0, 95, datos, cabeza,{fontName:"Arial",fontSize:"9",autoSize: false,headerBackgroundColor:"#FFFFFF",padding:0.3,});
 

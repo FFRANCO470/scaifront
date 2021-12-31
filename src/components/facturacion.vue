@@ -8,7 +8,7 @@
         <v-card style="margin-top:70px; margin-left:30px; width:95%; box-shadow: 0 0 20px #A068B8; ">
             <v-row>
                 <v-col>
-                    <v-checkbox style="margin-left:10px;" v-model="guardarDatos"  :label="`No guardar cliente ${guardarDatos}`"></v-checkbox>
+                    <v-checkbox style="margin-left:10px;" v-model="guardarDatos"  :label="`No guardar cliente`"></v-checkbox>
 
                     <div style="font-family: 'calibri';  color: #00000;  font-size: 20px; text-align:left;  margin-left:30px; margin-top:10px;">
                         <div class="form-group row">
@@ -537,7 +537,6 @@
                     })
                 })
                 this.articulosMostradosVenta=pepe;
-                
             },//meterArticulos
 
             //meter el articulo en la venta
@@ -559,6 +558,7 @@
                 
                 //validar tipo factura
                 if(this.tipoFactura===""){return this.msjErrores('Tipo de factura obligatorio')}
+
                 //validar subtipo factura
                 if(this.tipoFactura=='venta'){
                     if(this.subTipoFactura==''){
@@ -573,8 +573,7 @@
                         if(saldoVenta != saldoTotal ){
                             return this.msjErrores('Saldos desiguales')
                         }
-                    }
-                    
+                    }    
                 }
 
                 //validar factura debito
@@ -602,6 +601,7 @@
                         return this.msjErrores('Artuculos obligatorios')
                     }
                 }
+
                 //validar comentario
                 if(this.comentario.length>250){
                     return this.msjErrores('Comentario mayor a 250 caracteres')
@@ -612,8 +612,6 @@
                     if(this.cliente._id===''){return this.msjErrores('Numero de documento obligatorio')}
                     if(this.cliente.nombre===''){return this.msjErrores('Nombre obligatorio')}
                 }
-
-
 
                 let me = this                
                 let header = {headers:{"token":this.$store.state.token}};
@@ -642,12 +640,7 @@
                             this.msjExitoso(response.data.msg);
                             this.traerNumFactura();
                             me.traerArticulosActivos();
-                            //me.limpiarTodo();
-
-                           me.crearPDF();
-                            //eventBus.$emit("pasar","la escalandia")
-                            
-                            //this.$router.push('/aaaa');
+                            me.crearPDF();
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
