@@ -353,16 +353,17 @@
                 axios.delete(`cliente/${id}`, header)
                     .then((response)=>{
                         this.msjExisto(response.data.msg);
-                        this.personas=[];
+                        let editedIndex = this.personas.indexOf(item)
+                        this.personas.splice(editedIndex,1);
                     })
                     .catch((error)=>{
-                    if(!error.response.data.msg){
-                        let msgErrores = error.response.data.errors[0].msg;
-                        this.msjError(msgErrores);
-                    }else{
-                        let msgErrores =error.response.data.msg;
-                        this.msjError(msgErrores);
-                    }
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
                     });
             },//eliminar
 
@@ -370,20 +371,20 @@
                 let id=this.id;
                 let header = {headers:{"token" : this.$store.state.token}};
                 if(tipoDocumento.trim()===''){
-                this.msjError('Tipo de documento vacio');
+                    this.msjError('Tipo de documento vacio');
                 }else{
                 axios.put(`cliente/actualizarTipoDoc/${id}`,{tipoDocumento}, header)
                     .then((response)=>{
                         this.msjExisto(response.data.msg);
                     })
                     .catch((error)=>{
-                    if(!error.response.data.msg){
-                        let msgErrores = error.response.data.errors[0].msg;
-                        this.msjError(msgErrores);
-                    }else{
-                        let msgErrores =error.response.data.msg;
-                        this.msjError(msgErrores);
-                    }
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
                     });
                 }
                 

@@ -334,6 +334,18 @@
 
     export default {
         data:()=>({
+            datosAlmacen:{
+                nameStore:'',
+                nit:'',
+                regimen:'',
+                representanteCC:'',
+                departamento:'',
+                ciudad:'',
+                direccion:'',
+                celular:'',
+                telefono:'',
+                email:''
+            },
             numFactura:0,
             guardarDatos:false,
             existeCliente:false,
@@ -404,6 +416,7 @@
             this.checkToken();
             this.traerNumFactura();
             this.traerArticulosActivos();
+            this.traerDatos();
         },
         methods:{
 
@@ -437,6 +450,28 @@
                     timer:1000
                 })
             },//msjExitoso
+            
+            traerDatos(){
+                let header = {headers:{"token" : this.$store.state.token}};
+                axios.get(`setting`,header)
+                    .then(response =>{
+                        this.datosAlmacen = response.data.configuraciones
+                    })
+                    .catch((error) =>{
+                        if(!error.response.data.msg){
+                            this.msgError = error.response.data.errors[0].msg;
+                            this.msjError(this.msgError);
+                        }else{
+                            if(error.response.data.msg==false){
+                                this.msjError('Configuracion basica no creada');
+                            }else{
+                                let msgErrores = error.response.data.msg
+                                this.msjError(msgErrores);
+                            }
+                        }
+                    })
+            },
+
 
             //buscar y traer el cliente
             traerCliente(){
@@ -677,6 +712,17 @@
                
                 var sise = 10
                 
+                //datos factura
+                let nameStore = this.datosAlmacen.nameStore.split(0,15)
+                let representanteCC = this.datosAlmacen.representanteCC.split(0,24)
+                let nit = this.datosAlmacen.nit.split(0,20)
+                let regimen = this.datosAlmacen.regimen.split(0,16)
+                let direccionS = this.datosAlmacen.direccion.split(0,23)
+                let ciudadS = this.datosAlmacen.ciudad.split(0,10)
+                let departamento = this.datosAlmacen.departamento.split(0,10)
+                let celular = this.datosAlmacen.celular.split(0,16)
+                let telefonoStore = this.datosAlmacen.telefono.split(0,15)
+
                 //cliente
                 let documento = this.cliente._id.slice(0,13); //17
                 let tipoDocumento = this.cliente.tipoDocumento.slice(0,9); //17
@@ -792,21 +838,21 @@
                 doc.beginFormObject(0, 0, 200, cortar)
                 
                 doc.setFont('helvetica', 'italic');
-                doc.text("The Scala",20,8,{charSpace:0.4,maxWidth:97});
+                doc.text(`${nameStore}`,0,8,{charSpace:0.4});
                 
                 doc.setFontSize(18);
                 doc.setFont("helvetica","bold");
 
                 doc.setFontSize(sise);
-                doc.text("GINA PAOLA CEPEDA VERGARA", 4, 15,{charSpace:0.2});
+                doc.text(`${representanteCC}`, 0, 15,{charSpace:0.2});
 
                 doc.setFontSize(sise);
-                doc.text("NIT: 52515303-7",       4, 20,{charSpace:0.2});
-                doc.text("REGIMEN SIMPLIFICADO", 4,  25,{charSpace:0.2});
-                doc.text("C.C EL PUENTE L.154",  4, 30,{charSpace:0.2});
-                doc.text("SAN GIL(SDER)",   4, 35,{charSpace:0.2});
-                doc.text("CELULAR : 311 893 8204",    4, 40,{charSpace:0.2});
-                doc.text("TELEFONO: 607 724 1748",        4, 45,{charSpace:0.2});
+                doc.text(`NIT: ${nit}`,       4, 20,{charSpace:0.2});
+                doc.text(`REGIMEN: ${regimen}`, 4,  25,{charSpace:0.2});
+                doc.text(`${direccionS}`,  4, 30,{charSpace:0.2});
+                doc.text(`${ciudadS}(${departamento})`,   4, 35,{charSpace:0.2});
+                doc.text(`CELULAR: ${celular}`,    4, 40,{charSpace:0.2});
+                doc.text(`TELEFONO: ${telefonoStore}`,        4, 45,{charSpace:0.2});
                 
                 doc.text(`NOMBRE: ${nombre}`,   4, 55 ,{charSpace:0.3});
                 doc.text(`TIPO DOCUMENTO: ${tipoDocumento}`,   4, 60 ,{charSpace:0.3});

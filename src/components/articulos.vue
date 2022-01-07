@@ -70,6 +70,7 @@
                         <!--editar activar desactivar-->
                         <template v-slot:[`item.actions`]="{ item }">
                             <v-icon    class="mr-2"  @click="editar(item)" >  mdi-pencil </v-icon>
+                            <v-icon    class="mr-2"  @click="eliminar(item)" >  mdi-delete </v-icon>
                             <v-icon    class="mr-2"  @click="cambioPage(2,item._id)" >mdi-file-search-outline</v-icon>
                             <template v-if="item.estado">
                                 <v-icon   class="mr-2" @click="activarDesactivarItem(2,item)" > mdi-check </v-icon>
@@ -646,7 +647,7 @@
                     let header = {headers:{"token" : this.$store.state.token}};
                     axios.put(`articulo/desactivar/${id}`,{}, header)
                         .then((response)=>{
-                            this.msjExitoso(response.data.msg);
+                            this.msjExisto(response.data.msg);
                             this.despuesActualiar(categoria,marca);
                         })
                         .catch((error)=>{
@@ -663,7 +664,7 @@
                     let header = {headers:{"token" : this.$store.state.token}};
                     axios.put(`articulo/activar/${id}`,  {},header)
                         .then((response)=>{
-                            this.msjExitoso(response.data.msg);
+                            this.msjExisto(response.data.msg);
                             this.despuesActualiar(categoria,marca);
                         })
                         .catch((error)=>{
@@ -683,21 +684,47 @@
                 let header = {headers:{"token" : this.$store.state.token}};
                 axios.post(`articulo/categoriaAndMarca`,{categoria:categoria,marca:marca}, header)
                     .then((response)=>{
-                        this.articulos = response.data.articulo;
-                        if(this.articulos.length==0){
-                            this.msjExisto('No hay articulos con esos caracteres')
-                        }
+                            this.articulos = response.data.articulo;
+                            this.categoriaFiltrada='';
+                            this.marcaFiltrada='';
+                            if(this.articulos.length==0){
+                                this.msjExisto('No hay articulos con esos caracteres')
+                            }
+                        })
+                        .catch((error)=>{
+                            if(!error.response.data.msg){
+                                let msgErrores = error.response.data.errors[0].msg;
+                                this.msjError(msgErrores);
+                            }else{
+                                let msgErrores = error.response.data.msg;
+                                this.msjError(msgErrores);
+                            }
+                        });
+
+                
+                        
+            },//despuesActualiar
+
+            //eliminar articulo de la bd
+            eliminar(item){
+                let id = item._id
+                let header = {headers:{"token" : this.$store.state.token}};
+                axios.delete(`articulo/${id}`, header)
+                    .then((response)=>{
+                        this.msjExisto(response.data.msg);
+                        let editedIndex = this.articulos.indexOf(item)
+                        this.articulos.splice(editedIndex,1);
                     })
                     .catch((error)=>{
                         if(!error.response.data.msg){
-                            let errores = error.response.data.errors[0].msg;
-                            this.msjError(errores);
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
                         }else{
-                            let errores =error.response.data.msg;
-                            this.msjError(errores);
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
                         }
                     });
-            },//despuesActualiar
+            },//eliminar
 
             //actualizar categoria
             actualizarCategoria(categoria){

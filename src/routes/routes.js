@@ -26,6 +26,8 @@ import vDebitos from '../components/vDebitos.vue';
 import vFactura from '../components/vFactura.vue';
 import vVentas from '../components/vVentas.vue';
 
+import informes from '../components/informes.vue';
+
 
 export const routes = [    
     {path:'/aaaa',component: aaaa},
@@ -55,5 +57,7 @@ export const routes = [
     {path:'/ventas/vDebitos', component:vDebitos},
     {path:'/ventas/vFactura', component:vFactura},
     {path:'/ventas/vVentas', component:vVentas},
+    
+    {path:'/informes', component:informes},
 
 ]

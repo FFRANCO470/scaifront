@@ -19,6 +19,24 @@
                     </v-btn>
                 </v-row>
 
+                <v-row>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:30px">
+                        <label>Categoria</label>
+                    </div>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:40px;margin-left:30px">
+                        <v-autocomplete solo  style="width:250px; margin-left:10px;" v-model="categoriaFiltrada"  :items="categoriasFiltro" ></v-autocomplete>
+                    </div>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:30px">
+                        <label>Marca</label>
+                    </div>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:40px;margin-left:30px">
+                        <v-autocomplete  solo style="width:250px; margin-left:10px;" v-model="marcaFiltrada"  :items="marcasFiltro" ></v-autocomplete>
+                    </div>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:30px;margin-left:30px">
+                        <v-btn style="margin-right:10px; margin-left:50px;  margin-top:20px"   icon color="#72128E"  @click="filtarCateAndMarca()"><v-icon size="40">mdi-magnify</v-icon> </v-btn>
+                    </div>
+                </v-row>
+
                 <v-row style="margin-left:10px;margin-top:10px;"> 
                     <v-col>   
                         <div class="form-group row texto">
@@ -98,6 +116,10 @@
     import XLSX from "xlsx"
     export default {
         data:()=>({
+            categoriaFiltrada:'',
+            marcaFiltrada:'',
+            categoriasFiltro:[],  //filtros
+            marcasFiltro:[],      //filtros
             dialog:false,
             articulos:[],
             search:'',
@@ -121,7 +143,8 @@
         }),//data
         created(){
             this.checkToken();
-            this.traerSeparados();
+            this.traerCategorias();
+            this.traerMarcas();
         },
         methods:{
 
@@ -152,9 +175,64 @@
                     timer: 2000})
             },
 
-            traerSeparados(){
+            traerCategorias(){
+                let me = this;
+                let categoriasArray=[];
+                let header = {headers:{"token":this.$store.state.token}};
+                axios.get("categoria/activas",header)
+                    .then(response=>{
+                        categoriasArray = response.data.categoria;
+                        if(categoriasArray.length>0){
+                            categoriasArray.map(function(x){
+                                me.categoriasFiltro.push({text: x.nombre, value: x._id});
+                            })
+                        }else{
+                            this.msjExisto("No hay categorias activas")
+                        }
+                        me.categoriasFiltro.unshift("")
+                    })
+                    .catch(function (error) {
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores = error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
+                    });
+            },//traerCategorias
+
+            //traer las marcas activas para filtro y agregar
+            traerMarcas(){
+                let me = this;
+                let marcasArray=[];
+                let header = {headers:{"token":this.$store.state.token}};
+                axios.get("marca/activas",header)
+                    .then(response=>{
+                        marcasArray = response.data.marca;
+                        if(marcasArray.length>0){
+                            marcasArray.map(function(x){
+                                me.marcasFiltro.push({text: x.nombre, value: x._id});
+                            })
+                        }else{
+                            this.msjExisto("No hay marcas activas")
+                        }
+                        me.marcasFiltro.unshift("")
+                    })
+                    .catch(function (error) {
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores = error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
+                    });
+            },//traerMarcas
+
+            filtarCateAndMarca(){
                 let header = {headers:{"token" : this.$store.state.token}};
-                axios.get("articulo/separados",header)
+                axios.get(`articulo/separados?categoria=${this.categoriaFiltrada}&marca=${this.marcaFiltrada}`,header)
                     .then(response =>{
                         this.articulos = response.data.articulo;
                         if(this.articulos.length==0){
