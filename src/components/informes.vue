@@ -1,28 +1,31 @@
 <template >
     <div>
         <v-container fluid>
+
             <template>
 
                 <v-row>
                     <div style="color: #72128E;  font-size:32px;  text-align:center; margin-top:50px;margin-left:30px">
                         <label>Informes</label>
                     </div>
+                </v-row>
+                <v-row>
+                    <hr style="align:center; width:95%; margin-top:30px"><br>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:5px;margin-left:30px">
+                        
+                        <label>Saldo de Caja del Día<br></label>
+                    </div>
                     <v-spacer></v-spacer>
-                    <v-btn  depressed dark  class="mb-2 purple darken-3 white--text"  style="margin-right:30px; margin-left:20px;  margin-top:50px"   @click="exportExcel()">
+                    <v-btn  depressed dark  class="mb-2 purple darken-3 white--text"  style="margin-right:30px; margin-left:20px;  margin-top:5px"   @click="exportExcel2()">
                         <v-icon size="25">mdi-file-excel-outline</v-icon>Exportar
                     </v-btn>
                 </v-row>
-                <v-row>
-                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:30px">
-                        <label>Categorias vendidas (venta venta)</label>
-                    </div>
-                </v-row>
 
                 <v-row>
-                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:30px">
+                    <div style="color: #000000;  font-size:20px;  text-align:center; margin-top:10px;margin-left:30px">
                         <label>Fecha</label>
                     </div>
-                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:40px;margin-left:30px">
+                    <div style="color: #000000;  font-size:20px;  text-align:center; margin-top:0px;margin-left:30px">
                         <v-menu ref="menu"   v-model="calendarioInicio" :close-on-content-click="false"  transition="scale-transition" offset-y  min-width="auto" >
                             <template   v-slot:activator="{ on, attrs }">
                             <v-text-field style="width:250px;margin-left:20px;" v-model="fechaInicio"  prepend-icon="mdi-calendar"  readonly v-bind="attrs" v-on="on" ></v-text-field>
@@ -33,32 +36,96 @@
                             </v-date-picker>
                         </v-menu>
                     </div>
-                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:30px;margin-left:30px">
-                        <v-btn style="margin-right:10px; margin-left:50px;  margin-top:20px"   icon color="#72128E"  @click="traerCategorias()"><v-icon size="40">mdi-magnify</v-icon> </v-btn>
+                    <div style="color: #000000;  font-size:20px;  text-align:center; margin-top:0px;margin-left:30px">
+                        <v-btn style="margin-right:10px; margin-left:50px;  margin-top:20px"   icon color="#000000"  @click="traerTotalesCaja()"><v-icon size="40">mdi-magnify</v-icon> </v-btn>
+                    </div>
+                </v-row>
+                
+                <table  style="margin-top: 25px" class="tabla">
+                    <thead class="tablaCabeza">
+                        <tr>
+                            <th>Tipo Factura</th>
+                            <th>Efectivo</th>
+                            <th>Nequi</th>
+                            <th>Tarjeta</th>
+                            <th>Sistecredito</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tablaCuerpo">
+                        <tr v-for="(objeto,index) in totalesCaja" :key="`objeto-${index}`">
+                            <td v-text="objeto._id"></td>
+                            <td v-text="objeto.efectivo"></td>
+                            <td v-text="objeto.nequi"></td>
+                            <td v-text="objeto.tarjeta"></td>
+                            <td v-text="objeto.credito"></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </template>
+
+            <template>
+                <v-row>
+                    <hr style="align:center; width:95%; margin-top:30px"><br>
+                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:5px;margin-left:30px">
+                        
+                        <label>Categorias 'venta venta' del día</label>
+                    </div>
+                    <v-spacer></v-spacer>
+                    <v-btn  depressed dark  class="mb-2 purple darken-3 white--text"  style="margin-right:30px; margin-left:20px;  margin-top:5px"   @click="exportExcel()">
+                        <v-icon size="25">mdi-file-excel-outline</v-icon>Exportar
+                    </v-btn>
+                </v-row>
+                <v-row>
+                    <div style="color: #000000;  font-size:20px;  text-align:center; margin-top:10px;margin-left:30px">
+                        <label>Fecha</label>
+                    </div>
+                    <div style="color: #000000;  font-size:20px;  text-align:center; margin-top:0px;margin-left:30px">
+                        <v-menu ref="menu"   v-model="calendarioInicio" :close-on-content-click="false"  transition="scale-transition" offset-y  min-width="auto" >
+                            <template   v-slot:activator="{ on, attrs }">
+                            <v-text-field style="width:250px;margin-left:20px;" v-model="fechaInicio"  prepend-icon="mdi-calendar"  readonly v-bind="attrs" v-on="on" ></v-text-field>
+                            </template>
+                            <v-date-picker v-model="fechaInicio"  no-title scrollable  >
+                            <v-spacer></v-spacer>
+                            <v-btn text color="primary" @click="calendarioInicio = false"  > OK </v-btn>
+                            </v-date-picker>
+                        </v-menu>
+                    </div>
+                    <div style="color: #000000;  font-size:20px;  text-align:center; margin-top:0px;margin-left:30px">
+                        <v-btn style="margin-right:10px; margin-left:50px;  margin-top:20px"   icon color="#000000"  @click="traerCategorias()"><v-icon size="40">mdi-magnify</v-icon> </v-btn>
                     </div>
                 </v-row>
 
                 <v-row>
-                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:30px">
-                        <label>Total precio: {{totalVendido}}</label>
+                    <div style="color: #000000;  font-size:20px;  text-align:center; margin-top:20px;margin-left:30px">
+                        <label>Total Ingreso: {{totalVendido}}</label>
                     </div>
-                    <div style="color: #72128E;  font-size:20px;  text-align:center; margin-top:50px;margin-left:250px">
+                    <div style="color: #000000;  font-size:20px;  text-align:center; margin-top:20px;margin-left:250px">
                         <label>Total costo: {{totalCosto}}</label>
                     </div>
                 </v-row>
-                
-                <template>
-                    <container>
-                        <v-data-table style="margin-top:50px"  class="elevation-15 "  :headers="categoriasTitle" :items="categorias"  :search="search">
-                            <template v-slot:top>
-                                <v-toolbar  flat>
-                                <v-spacer></v-spacer>
-                                <v-text-field   v-model="search"  append-icon="mdi-magnify"  label="Buscar por caracteres"  single-line hide-details></v-text-field>
-                                </v-toolbar>
-                            </template >
-                        </v-data-table>
-                    </container>
-                </template>
+
+                <table  style="margin-top: 25px" class="tabla">
+                    <thead class="tablaCabeza">
+                        <tr>
+                            <th>Categoria</th>
+                            <th>Cantidad</th>
+                            <th>Total Costo</th>
+                            <th>Totol Ingreso</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tablaCuerpo">
+                        <tr v-for="(objeto,index) in categorias" :key="`objeto-${index}`">
+                            <td v-text="objeto.categoria"></td>
+                            <td v-text="objeto.cantidad"></td>
+                            <td v-text="objeto.totalCosto"></td>
+                            <td v-text="objeto.totalPrecio"></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
             </template>
         </v-container>
     </div>
@@ -75,13 +142,9 @@
             fechaInicio: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
             search:'',
 
-            categorias:[],//info tablas
-            categoriasTitle:[
-                { text: 'Categoria', value: 'categoria'  ,class:'purple darken-3 white--text',sortable: true },
-                { text: 'Unidades', value: 'cantidad'  ,class:'purple darken-3 white--text',sortable: true },
-                { text: 'Costo Total', value: 'totalCosto'  ,class:'purple darken-3 white--text',sortable: false },
-                { text: 'Ingreso total', value: 'totalPrecio'  ,class:'purple darken-3 white--text',sortable: false }
-            ],
+            totalesCaja:[],
+
+            categorias:[],
 
 
         }),//data
@@ -189,6 +252,52 @@
                 XLSX.writeFile(workbook, `${filename}.xlsx`)
             },//exportarExcel
 
+            traerTotalesCaja(){
+                let header = {headers:{"token" : this.$store.state.token}};
+                axios.get(`informes/saldoCaja?fecha=${this.fechaInicio}`,header)
+                    .then(response=>{
+                        this.totalesCaja = response.data.articulos;
+                        if(this.totalesCaja.length==0){
+                            this.msjExito('No hay movimientos')
+                        }
+                    })
+                    .catch((error) =>{
+                        if(!error.response.data.msg){
+                            let msgErrores = error.response.data.errors[0].msg;
+                            this.msjError(msgErrores);
+                        }else{
+                            let msgErrores =error.response.data.msg;
+                            this.msjError(msgErrores);
+                        }
+                    })
+            },
+
+            exportExcel2(){
+                let articulosExport=[];
+                let me = this;
+                if(me.totalesCaja.length>1000){
+                    return this.msjError("Max. 1000 datos");
+                }
+                me.totalesCaja.map(function(x){
+                    articulosExport.push(
+                        {
+                            tipoFactura:x._id,
+                            efectivo:x.efectivo,
+                            nequi:x.nequi,
+                            tarjeta:x.tarjeta,
+                            sistecredito:x.credito
+
+                        }
+                    );
+                });
+
+                let data = XLSX.utils.json_to_sheet(articulosExport)
+                const workbook = XLSX.utils.book_new()
+                const filename = 'totalesCaja'
+                XLSX.utils.book_append_sheet(workbook, data, filename)
+                XLSX.writeFile(workbook, `${filename}.xlsx`)
+            }
+
         },//methods
         computed:{
             totalVendido(){
@@ -205,10 +314,31 @@
     }//export default
 </script>
 <style scoped>
-  .texto{
-    font-family: 'calibri';
-    color: #00000;
-    font-size: 20px;
-    text-align:left;
-  }
+    .texto{
+        font-family: 'calibri';
+        color: #00000;
+        font-size: 20px;
+        text-align:left;
+    }
+    .tabla{
+        margin-left:auto;
+        margin-right:auto;
+        border: 2px solid black;
+        border-collapse: collapse;
+    }
+    th,td{
+        border: 2px solid black;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        
+    }
+    th{
+        background-color: black;
+        color:white;
+         border: 2px solid white;
+    }
+    
+
 </style>

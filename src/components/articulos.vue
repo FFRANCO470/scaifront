@@ -978,7 +978,8 @@
         line-height: 1.4em;
         font-style: normal;
         border-collapse:separate;
-        width:100%
+        width:100%;
+        border-collapse: collapse;
     }
 
     .table1 thead th{
