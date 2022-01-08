@@ -426,6 +426,8 @@
                     this.$router.push('/');
                 }
             },
+            
+            
 
             //msg de alerta erronea
             msjErrores : function(msg){
@@ -676,6 +678,7 @@
                             this.traerNumFactura();
                             me.traerArticulosActivos();
                             me.crearPDF();
+                            
                         })
                         .catch((error)=>{
                             if(!error.response.data.msg){
@@ -745,9 +748,14 @@
                 let correr = 84;
                 var datos = [];
 
+                let efectivo =this.efectivo;
+                let nequi =this.nequi;
+                let credito =this.credito;
+                let tarjeta =this.tarjeta;
+
                 if(this.tipoFactura=="debito"){
 
-                    let totalDebito = parseInt(this.efectivo) + parseInt(this.nequi) + parseInt(this.tarjeta);
+                    let totalDebito = parseInt(efectivo) + parseInt(nequi) + parseInt(tarjeta);
                     datos = [
                         {referencia: " ",cantidad: "1",categoria: "Debito",precio: " ",total:totalDebito.toString()},
                         {referencia: " ",cantidad: " ",categoria: " ",precio: " ",total:" "},
@@ -777,16 +785,17 @@
                         )
                     }
                     let total = this.saldoAnterior.toString();
-                    let abono = parseInt(this.efectivo) + parseInt(this.nequi) + parseInt(this.tarjeta) + parseInt(this.credito)
-                    let saldo = parseInt(total) - (parseInt(this.efectivo) + parseInt(this.nequi) + parseInt(this.tarjeta) + parseInt(this.credito))
+                    let abono = parseInt(efectivo) + parseInt(nequi) + parseInt(tarjeta) + parseInt(credito)
+                    let saldo = parseInt(total) - (parseInt(efectivo) + parseInt(nequi) + parseInt(tarjeta) + parseInt(credito))
                     datos.push(
                         {referencia: "",cantidad: "",categoria: "",precio: "saldo A.",total:total},
                         {referencia: "",cantidad: "",categoria: "",precio: "abono ",total:abono.toString()},
                         {referencia: "",cantidad: "",categoria: 0,precio: "saldo ",total:saldo.toString()}
                     )
-                    correr = correr + 40
+                    correr = correr + 30
                     let tamano = datos.length;
-                    correr = correr + ((tamano-5) * 8);
+
+                    correr = correr + ((tamano-3) * 8);
 
                 }else{
 
@@ -813,8 +822,8 @@
                         correr = correr + ((tamano-3) * 8);
 
                     }else{
-                        let abono = parseInt(this.efectivo) + parseInt(this.nequi) + parseInt(this.tarjeta) + parseInt(this.credito)
-                        let saldo = parseInt(total) - (parseInt(this.efectivo) + parseInt(this.nequi) + parseInt(this.tarjeta) + parseInt(this.credito))
+                        let abono = parseInt(efectivo) + parseInt(nequi) + parseInt(tarjeta) + parseInt(credito)
+                        let saldo = parseInt(total) - (parseInt(efectivo) + parseInt(nequi) + parseInt(tarjeta) + parseInt(credito))
                         datos.push(
                             {referencia: "",cantidad: "",categoria: "",precio: "subtotal",total:this.totalVendido.toString()},
                             {referencia: "",cantidad: "",categoria: "",precio: "desc.",total:this.descuento.toString()},
@@ -824,7 +833,7 @@
                         )
                         correr = correr + 40
                         let tamano = datos.length;
-                        correr = correr + ((tamano-5) * 8);
+                        correr = correr + ((tamano-5) * 10);
                     }
                 }
 
@@ -833,6 +842,8 @@
 
                 let cortar = (correr + 61) * 2.9;
                 
+                this.checkTokenFine();
+
                 var doc = new jsPDF();
 
                 doc.beginFormObject(0, 0, 200, cortar)
@@ -886,10 +897,10 @@
 
                 var datos2 = []
                 if(this.tipoFactura=="debito"){
-                    datos2 = [{efectivo: this.efectivo.toString(), tarjeta: this.tarjeta.toString(), nequi:this.nequi.toString(), credito: "0"}];
+                    datos2 = [{efectivo: efectivo.toString(), tarjeta: tarjeta.toString(), nequi:nequi.toString(), credito: "0"}];
 
                 }else{
-                    datos2 = [{efectivo: this.efectivo.toString(), tarjeta: this.tarjeta.toString(), nequi:this.nequi.toString(), credito: this.credito.toString()}];
+                    datos2 = [{efectivo: efectivo.toString(), tarjeta: tarjeta.toString(), nequi:nequi.toString(), credito: credito.toString()}];
                 }
                 var cabeza2 = [
                     {align:"center",width:22,id:"efectivo",name:"efectivo",prompt:"Efectivo"},
@@ -901,17 +912,20 @@
 
                 doc.table(0, correr + 15, datos2, cabeza2,{fontName:"Arial",fontSize:"9",autoSize: false,headerBackgroundColor:"#FFFFFF",padding:0.3,});
 
-
                 doc.text("Observaciones", 28,correr + 30,{charSpace:0.3});
                 doc.text(`${observacion}`, 4,correr + 35,{maxWidth:"52",charSpace:0.3});
 
-                
                 doc.roundedRect(0, 0, 68, correr + 63, 0, 0);
                 
                 doc.output('dataurlnewwindow');
-                this.limpiarTodo();
                 
-            }//crearPDF
+            },//crearPDF
+
+            checkTokenFine(){
+               
+                this.$router.push('/home');
+                
+            },
             
         },//methods
         computed:{

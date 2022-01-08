@@ -2,7 +2,7 @@
     <div>
         <v-container fluid>
             <v-row>
-                <div style="color: #72128E;  font-size:32px;  text-align:center; margin-top:50px;margin-left:30px">
+                <div style="color: #72128E;  font-size:32px;  text-align:center; margin-top:50px;margin-left:30px" >
                     <label>Factura</label>
                 </div>
                 <v-spacer></v-spacer>
@@ -486,7 +486,8 @@
                 }else if(this.tipoFactura=="abonoabono"){
 
                     let articulospdf = this.articulosAbono
-                    if(articulospdf.length != 0){
+                    let contarArti = articulospdf.length
+                    if( contarArti!== 0){
                         articulospdf.map(function(x){
                             datos.push({
                                 referencia:x.referencia,
@@ -559,7 +560,6 @@
                 let observacion = this.comentario.slice(0,251);
 
                 let cortar = (correr + 61) * 2.9;
-                
                 var doc = new jsPDF();
 
                 doc.beginFormObject(0, 0, 200, cortar)
@@ -634,7 +634,7 @@
                 doc.roundedRect(0, 0, 68, correr + 63, 0, 0);
                 
                 doc.output('dataurlnewwindow');
-                
+
             }//imprimir
 
 
